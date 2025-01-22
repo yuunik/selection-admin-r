@@ -11,7 +11,8 @@
     "fix": "eslint src --fix",
     "format": "prettier --write \"./**/*.{html,tsx,jsx,json,md}\"",
     "lint:eslint": "eslint src/**/*.{tsx,jsx} --cache --fix",
-    "lint:style": "stylelint src/**/*.{css,scss} --cache --fix"
+    "lint:style": "stylelint src/**/*.{css,scss} --cache --fix",
+    "prepare": "husky install"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -32,6 +33,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.16",
     "globals": "^15.14.0",
+    "husky": "^8.0.0",
     "postcss": "^8.5.1",
     "postcss-html": "^1.8.0",
     "postcss-scss": "^4.0.9",
