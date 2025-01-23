@@ -12,7 +12,8 @@
     "format": "prettier --write \"./**/*.{html,tsx,jsx,json,md}\"",
     "lint:eslint": "eslint src/**/*.{tsx,jsx} --cache --fix",
     "lint:style": "stylelint src/**/*.{css,scss} --cache --fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "commitlint": "commitlint --config commitlint.config.cjs -e -V"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -20,6 +21,8 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.26.5",
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
     "@eslint/js": "^9.18.0",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
