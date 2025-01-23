@@ -13,7 +13,8 @@
     "lint:eslint": "eslint src/**/*.{tsx,jsx} --cache --fix",
     "lint:style": "stylelint src/**/*.{css,scss} --cache --fix",
     "prepare": "husky install",
-    "commitlint": "commitlint --config commitlint.config.cjs -e -V"
+    "commitlint": "commitlint --config commitlint.config.cjs -e -V",
+    "preinstall": "node ./scripts/preinstall.js"
   },
   "dependencies": {
     "react": "^18.3.1",
