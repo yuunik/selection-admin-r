@@ -5,7 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite --open",
+    "dev:test": "vite --mode test --open",
+    "dev:prod": "vite --mode production --open",
     "build": "tsc -b && vite build",
+    "build:test": "vue-tsc && vite build --mode test",
+    "build:prod": "vue-tsc && vite build --mode production",
     "lint": "eslint src",
     "preview": "vite preview",
     "fix": "eslint src --fix",
