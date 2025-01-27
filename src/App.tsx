@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { Button } from 'antd'
 import reactLogo from '@/assets/react.svg'
 import viteLogo from '/vite.svg'
 import '@/App.css'
+import SvgIcon from '@/components/SvgIcon' // 导入自定义组件
 
-function App() {
+const App = () => {
   const [count, setCount] = useState(0)
   console.log(import.meta.env)
 
@@ -30,7 +30,7 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-      <Button type="primary">Button</Button>
+      <SvgIcon iconName="home" color="red" width="200" height="200" />
     </>
   )
 }
