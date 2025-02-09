@@ -2,3 +2,21 @@
  * A variable file.
  */
 $color-primary: red;
+
+// 第三方登录图标共享样式
+@mixin iconTheme {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+// 短信登录和密码登录共享央视
+@mixin captchaAndPassword {
+  margin-top: 20px;
+
+  .btn-grp {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+}

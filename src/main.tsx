@@ -5,7 +5,6 @@ import 'virtual:svg-icons-register'
 import App from '@/App.tsx'
 
 import '@/styles/index.scss'
-// import '@/index.scss'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

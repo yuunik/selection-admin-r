@@ -1,4 +1,6 @@
-const Layout = () => {
+import React from 'react'
+
+const Layout: React.FC = () => {
   return <div>Layout Page</div>
 }
 
