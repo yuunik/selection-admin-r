@@ -1,5 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { FormProps, Image } from 'antd'
 import { Form, Input, Button, Divider } from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
+// import { useNavigate } from 'react-router-dom'
 import {
   QqOutlined,
   WechatOutlined,
@@ -8,6 +11,10 @@ import {
   MobileOutlined,
   MessageOutlined,
 } from '@ant-design/icons'
+
+import { generateCaptchaApi } from '@/apis/loginApi.tsx'
+import store from '@/store'
+import { fetchLogin } from '@/store/modules/user'
 
 import './index.scss'
 import Left from '@/assets/login_left.png'
@@ -24,6 +31,18 @@ const Login: React.FC = () => {
   const [count, setCount] = useState(60)
   // 是否点击获取验证码
   const [isSendSms, setIsSendSms] = useState(false)
+  // 输入密码的错误次数
+  // const [pwdErrorCount, setPwdErrorCount] = useState(0)
+  // 验证码key
+  const [codeKey, setCodeKey] = useState('')
+  // 验证码value
+  const [codeValue, setCodeValue] = useState('')
+  const dispatch = useDispatch<typeof store.dispatch>()
+  // const navigate = useNavigate()
+  const pwdErrorCount = useSelector(
+    (state: ReturnType<typeof store.getState>) =>
+      state.userReducer.pwdErrorCount,
+  )
 
   // 短信登录字段申明
   interface SmsFormProps {
@@ -33,8 +52,9 @@ const Login: React.FC = () => {
 
   // 密码登录字段申明
   interface LoginFormProps {
-    username?: string
-    password?: string
+    userName: string
+    password: string
+    captcha?: string
   }
 
   // 立即注册
@@ -70,6 +90,38 @@ const Login: React.FC = () => {
     }, 1000)
   }
 
+  // 用户登录
+  const handleLogin: FormProps<LoginFormProps>['onFinish'] = async (values) => {
+    await dispatch(
+      fetchLogin({
+        userName: values.userName,
+        password: values.password,
+        captcha: values.captcha as string,
+        codeKey: codeKey,
+      }),
+    )
+  }
+
+  // 生成验证码
+  const generateCaptcha = async () => {
+    const {
+      data: {
+        code,
+        data: { codeKey, codeValue },
+      },
+    } = await generateCaptchaApi()
+    if (code === 200) {
+      setCodeKey(codeKey)
+      setCodeValue(codeValue)
+    }
+  }
+
+  useEffect(() => {
+    if (pwdErrorCount > 3) {
+      generateCaptcha()
+    }
+  }, [pwdErrorCount])
+
   return (
     <div className="bg">
       <div className="login-container">
@@ -97,6 +149,7 @@ const Login: React.FC = () => {
                 密码登录
               </span>
             </nav>
+            {/* 密码登录表单 */}
             {isPwdLogin && (
               <Form
                 className="form-content-bypwd"
@@ -105,12 +158,47 @@ const Login: React.FC = () => {
                 wrapperCol={{ span: 16 }}
                 style={{ maxWidth: 600 }}
                 autoComplete="off"
+                onFinish={handleLogin}
               >
-                <Item<LoginFormProps> label="账号" name="username">
-                  <Input prefix={<UserOutlined />} placeholder="账号" />
+                <Item<LoginFormProps>
+                  label="账号"
+                  name="userName"
+                  rules={[{ required: true, message: '请输入账号' }]}
+                >
+                  <Input prefix={<UserOutlined />} placeholder="请输入账号" />
                 </Item>
-                <Item<LoginFormProps> label="密码" name="password">
-                  <Password prefix={<LockOutlined />} placeholder="密码" />
+                <Item<LoginFormProps>
+                  label="密码"
+                  name="password"
+                  rules={[{ required: true, message: '请输入密码' }]}
+                >
+                  <Password
+                    prefix={<LockOutlined />}
+                    placeholder="请输入密码"
+                  />
+                </Item>
+                <Item<LoginFormProps>
+                  label="验证码"
+                  name="captcha"
+                  style={{
+                    display: pwdErrorCount > 3 ? 'block' : 'none',
+                  }}
+                  rules={[
+                    { required: pwdErrorCount > 3, message: '请输入验证码' },
+                  ]}
+                >
+                  <Input
+                    prefix={<MessageOutlined />}
+                    suffix={
+                      <Image
+                        src={codeValue}
+                        preview={false}
+                        onClick={generateCaptcha}
+                        style={{ cursor: 'pointer' }}
+                      />
+                    }
+                    placeholder="请输入验证码"
+                  />
                 </Item>
                 <Item wrapperCol={{ span: 16, offset: 4 }}>
                   <div className="btn-grp">
@@ -129,6 +217,7 @@ const Login: React.FC = () => {
                 </Item>
               </Form>
             )}
+            {/* 短信登录表单 */}
             {!isPwdLogin && (
               <Form
                 className="form-content-bycaptcha"

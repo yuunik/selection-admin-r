@@ -22,8 +22,15 @@ request.interceptors.request.use(
 // 响应拦截器
 request.interceptors.response.use(
   (response) => {
+    const {
+      data: { code, message: msg },
+    } = response
+    if (code !== 200) {
+      // 不为200，提示错误信息
+      message.error(msg)
+    }
     // 对响应数据做点什么
-    return response.data
+    return response
   },
   (error) => {
     // 错误信息
