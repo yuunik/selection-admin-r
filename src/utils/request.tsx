@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { message } from 'antd'
+
 import store from '@/store'
 
 // 创建axios实例
@@ -35,7 +36,7 @@ request.interceptors.response.use(
     const {
       data: { code, message: msg },
     } = response
-    if (code !== 200) {
+    if (code !== 200 && code !== 208) {
       // 不为200，提示错误信息
       message.error(msg)
     }

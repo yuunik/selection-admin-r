@@ -1,6 +1,7 @@
 import { RouterProvider } from 'react-router-dom'
-import router from '@/router'
 import { Provider } from 'react-redux'
+
+import router from '@/router'
 import redux from '@/store'
 
 const App = () => {
