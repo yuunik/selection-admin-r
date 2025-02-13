@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FormProps, Image } from 'antd'
 import { Form, Input, Button, Divider } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
-// import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   QqOutlined,
   WechatOutlined,
@@ -38,7 +38,7 @@ const Login: React.FC = () => {
   // 验证码value
   const [codeValue, setCodeValue] = useState('')
   const dispatch = useDispatch<typeof store.dispatch>()
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   const pwdErrorCount = useSelector(
     (state: ReturnType<typeof store.getState>) =>
       state.userReducer.pwdErrorCount,
@@ -92,6 +92,7 @@ const Login: React.FC = () => {
 
   // 用户登录
   const handleLogin: FormProps<LoginFormProps>['onFinish'] = async (values) => {
+    // 发送登录请求
     await dispatch(
       fetchLogin({
         userName: values.userName,
@@ -100,6 +101,8 @@ const Login: React.FC = () => {
         codeKey: codeKey,
       }),
     )
+    // 路由跳转
+    navigate('/home')
   }
 
   // 生成验证码
@@ -111,6 +114,7 @@ const Login: React.FC = () => {
       },
     } = await generateCaptchaApi()
     if (code === 200) {
+      // 设置验证码key和value
       setCodeKey(codeKey)
       setCodeValue(codeValue)
     }

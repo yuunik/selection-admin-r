@@ -16,7 +16,7 @@ const constantRoutes = [
     name: 'login',
   },
   {
-    path: '/',
+    path: '/home',
     element: (
       <Suspense fallback={<div>Loading...</div>}>
         <Layout />

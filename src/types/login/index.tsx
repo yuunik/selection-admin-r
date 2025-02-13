@@ -25,3 +25,21 @@ export type CaptchaType = {
   /* 验证码图片 base64 */
   codeValue: string
 }
+
+// 用户信息类型
+export type UserInfoType = {
+  /* 用户名 */
+  userName: string
+  /* 密码 */
+  password: string
+  /* 昵称 */
+  name: string
+  /* 手机号码 */
+  phone: string
+  /* 头像 */
+  avatar: string
+  /* 描述 */
+  description: string
+  /* 用户状态 */
+  status: number
+}

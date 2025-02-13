@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { Dispatch } from '@reduxjs/toolkit'
 import { loginApi } from '@/apis/loginApi.tsx'
 import type { LoginReqType } from '@/types/login'
+import { getUserInfoApi } from '../../../apis/loginApi.tsx'
+import { message } from 'antd'
 
 // 用户信息 reducer
 const userStore = createSlice({
@@ -23,11 +25,15 @@ const userStore = createSlice({
     modifyPwdErrorCount(state) {
       state.pwdErrorCount++
     },
+    // 保存用户信息
+    saveUserInfo(state, actions) {
+      state.userInfo = actions.payload
+    },
   },
 })
 
 // 导出 actions
-const { saveToken, modifyPwdErrorCount } = userStore.actions
+const { saveToken, modifyPwdErrorCount, saveUserInfo } = userStore.actions
 
 // 异步 actions
 // 用户登录
@@ -43,16 +49,26 @@ const fetchLogin = (loginParams: LoginReqType) => {
       // 密码错误
       dispatch(modifyPwdErrorCount())
     }
+    // 登录成功
+    message.success('登录成功')
     // 触发 saveToken action
     dispatch(saveToken(token))
   }
 }
 
 // 获取用户信息
-// const fetchUserInfo = () => {}
+const fetchUserInfo = () => {
+  return async (dispatch: Dispatch) => {
+    const {
+      data: { data },
+    } = await getUserInfoApi()
+    // 触发 saveUserInfo action
+    dispatch(saveUserInfo(data))
+  }
+}
 
 // 导出异步 actions
-export { fetchLogin }
+export { fetchLogin, fetchUserInfo }
 
 const userReducer = userStore.reducer
 

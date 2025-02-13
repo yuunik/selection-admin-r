@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { message } from 'antd'
+import store from '@/store'
 
 // 创建axios实例
 const request = axios.create({
@@ -7,9 +8,18 @@ const request = axios.create({
   timeout: 5000,
 })
 
+const getToken = () => {
+  const state = store.getState()
+  return state.userReducer.token
+}
+
 // 请求拦截器
 request.interceptors.request.use(
   (config) => {
+    const token = getToken()
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
     // 在发送请求之前做些什么
     return config
   },
