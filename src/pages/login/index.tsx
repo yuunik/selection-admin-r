@@ -41,6 +41,8 @@ const Login: React.FC = () => {
   const navigate = useNavigate()
   // 密码错误次数
   const [pwdErrorCount, setPwdErrorCount] = useState(0)
+  // 设置按钮载入状态
+  const [loading, setLoading] = useState(false)
 
   // 短信登录字段申明
   interface SmsFormProps {
@@ -91,6 +93,8 @@ const Login: React.FC = () => {
   // 用户登录
   const handleLogin: FormProps<LoginFormProps>['onFinish'] = async (values) => {
     try {
+      // 按钮载入状态
+      setLoading(true)
       // 发送登录请求
       await dispatch(
         fetchLogin({
@@ -100,11 +104,15 @@ const Login: React.FC = () => {
           codeKey: codeKey,
         }),
       )
+      // 按钮载入状态
+      setLoading(false)
       // 登录成功
       message.success('登录成功')
       // 路由跳转
       navigate('/')
     } catch (error) {
+      // 按钮载入状态
+      setLoading(false)
       const errMsg = (error as Error).message
       // 登录失败
       message.error(errMsg)
@@ -221,6 +229,7 @@ const Login: React.FC = () => {
                       htmlType="submit"
                       className="login-form-button"
                       shape="round"
+                      loading={loading}
                     >
                       登录
                     </Button>
