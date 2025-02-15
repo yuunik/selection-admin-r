@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { FormProps, Image } from 'antd'
+import { FormProps, Image, message } from 'antd'
 import { Form, Input, Button, Divider } from 'antd'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import {
   QqOutlined,
@@ -31,18 +31,16 @@ const Login: React.FC = () => {
   const [count, setCount] = useState(60)
   // 是否点击获取验证码
   const [isSendSms, setIsSendSms] = useState(false)
-  // 输入密码的错误次数
-  // const [pwdErrorCount, setPwdErrorCount] = useState(0)
   // 验证码key
   const [codeKey, setCodeKey] = useState('')
   // 验证码value
   const [codeValue, setCodeValue] = useState('')
+  // 获取 dispatch
   const dispatch = useDispatch<typeof store.dispatch>()
+  // 获取导航
   const navigate = useNavigate()
-  const pwdErrorCount = useSelector(
-    (state: ReturnType<typeof store.getState>) =>
-      state.userReducer.pwdErrorCount,
-  )
+  // 密码错误次数
+  const [pwdErrorCount, setPwdErrorCount] = useState(0)
 
   // 短信登录字段申明
   interface SmsFormProps {
@@ -92,17 +90,29 @@ const Login: React.FC = () => {
 
   // 用户登录
   const handleLogin: FormProps<LoginFormProps>['onFinish'] = async (values) => {
-    // 发送登录请求
-    await dispatch(
-      fetchLogin({
-        userName: values.userName,
-        password: values.password,
-        captcha: values.captcha as string,
-        codeKey: codeKey,
-      }),
-    )
-    // 路由跳转
-    navigate('/home')
+    try {
+      // 发送登录请求
+      await dispatch(
+        fetchLogin({
+          userName: values.userName,
+          password: values.password,
+          captcha: values.captcha as string,
+          codeKey: codeKey,
+        }),
+      )
+      // 登录成功
+      message.success('登录成功')
+      // 路由跳转
+      navigate('/')
+    } catch (error) {
+      const errMsg = (error as Error).message
+      // 登录失败
+      message.error(errMsg)
+      if (errMsg === '用户名或者密码错误') {
+        // 密码错误次数加1
+        setPwdErrorCount(pwdErrorCount + 1)
+      }
+    }
   }
 
   // 生成验证码

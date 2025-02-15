@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { message } from 'antd'
-
-import store from '@/store'
+//@ts-expect-error 忽略类型申明问题
+import Cookies from 'js-cookie'
 
 // 创建axios实例
 const request = axios.create({
@@ -9,15 +9,10 @@ const request = axios.create({
   timeout: 5000,
 })
 
-const getToken = () => {
-  const state = store.getState()
-  return state.userReducer.token
-}
-
 // 请求拦截器
 request.interceptors.request.use(
   (config) => {
-    const token = getToken()
+    const token = Cookies.get('token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -33,13 +28,6 @@ request.interceptors.request.use(
 // 响应拦截器
 request.interceptors.response.use(
   (response) => {
-    const {
-      data: { code, message: msg },
-    } = response
-    if (code !== 200 && code !== 208) {
-      // 不为200，提示错误信息
-      message.error(msg)
-    }
     // 对响应数据做点什么
     return response
   },

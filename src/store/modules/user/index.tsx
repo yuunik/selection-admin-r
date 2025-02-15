@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { Dispatch } from '@reduxjs/toolkit'
-import { message } from 'antd'
+//@ts-expect-error 无相关类型定义申明
+import Cookie from 'js-cookie'
 
 import { loginApi } from '@/apis/loginApi.tsx'
 import type { LoginReqType } from '@/types/login'
@@ -11,37 +12,29 @@ const userStore = createSlice({
   name: 'userReducer',
   initialState: {
     // 用户 token
-    token: '',
+    token: Cookie.get('token') || '',
     // 用户信息
     userInfo: {},
-    // 密码错误次数
-    pwdErrorCount: 0,
-    // 是否登录
-    isLogin: false,
   },
   reducers: {
     // 保存用户 token
     saveToken(state, action) {
       state.token = action.payload
-    },
-    // 修改密码错误次数
-    modifyPwdErrorCount(state) {
-      state.pwdErrorCount++
+      // token 存放入 Cookie
+      Cookie.set('token', state.token, {
+        domain: 'localhost',
+        expires: 7,
+      })
     },
     // 保存用户信息
     saveUserInfo(state, actions) {
       state.userInfo = actions.payload
     },
-    // 修改登录状态
-    modifyIsLogin(state, action) {
-      state.isLogin = action.payload
-    },
   },
 })
 
 // 导出 actions
-const { saveToken, modifyPwdErrorCount, saveUserInfo, modifyIsLogin } =
-  userStore.actions
+const { saveToken, saveUserInfo } = userStore.actions
 
 // 异步 actions
 // 用户登录
@@ -51,18 +44,16 @@ const fetchLogin = (loginParams: LoginReqType) => {
       data: {
         code,
         data: { token },
+        message: errorMessage,
       },
     } = await loginApi(loginParams)
-    if (code === 201) {
-      // 密码错误
-      dispatch(modifyPwdErrorCount())
+    if (code === 200) {
+      // 触发 saveToken action
+      dispatch(saveToken(token))
+      return 'ok'
+    } else {
+      return Promise.reject(new Error(errorMessage))
     }
-    // 登录成功
-    message.success('登录成功')
-    // 触发 modifyIsLogin action
-    dispatch(modifyIsLogin(true))
-    // 触发 saveToken action
-    dispatch(saveToken(token))
   }
 }
 
@@ -70,15 +61,14 @@ const fetchLogin = (loginParams: LoginReqType) => {
 const fetchUserInfo = () => {
   return async (dispatch: Dispatch) => {
     const {
-      data: { code, data },
+      data: { code, data, message: errorMessage },
     } = await getUserInfoApi()
-    if (code === 208) {
-      // 未登录
-      message.error('请先登录')
-      dispatch(modifyIsLogin(false))
-    } else {
+    if (code === 200) {
       // 触发 saveUserInfo action
       dispatch(saveUserInfo(data))
+      return 'ok'
+    } else {
+      return Promise.reject(new Error(errorMessage))
     }
   }
 }

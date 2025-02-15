@@ -1,8 +1,6 @@
 import { Suspense, lazy } from 'react'
 import { Navigate } from 'react-router-dom'
 
-import AuthRoute from '@/components/AuthRoute'
-
 const Layout = lazy(() => import('@/layout'))
 const Login = lazy(() => import('@/pages/login'))
 const NotFound = lazy(() => import('@/pages/404'))
@@ -18,13 +16,11 @@ const constantRoutes = [
     name: 'login',
   },
   {
-    path: '/home',
+    path: '/',
     element: (
-      <AuthRoute>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Layout />
-        </Suspense>
-      </AuthRoute>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Layout />
+      </Suspense>
     ),
     name: 'layout',
   },
