@@ -1,5 +1,5 @@
 // 后端同意返回格式类型
-import type { UserInfoType } from './login'
+import type { UserInfoType } from './login/index.d.tsx'
 
 export type ResType<T> = {
   /* 业务状态码 */

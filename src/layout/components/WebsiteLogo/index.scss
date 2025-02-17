@@ -1,0 +1,18 @@
+.logo-container {
+  height: $base-logo-height;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  // 网页logo
+  .website-logo {
+    width: 50px;
+    height: 100%;
+  }
+
+  // 网页名称
+  .website-name {
+    font-size: 25px;
+    color: white;
+  }
+}

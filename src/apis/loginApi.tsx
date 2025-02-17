@@ -1,7 +1,7 @@
 import { request } from '@/utils'
 import type { ResType } from '@/types'
 import type { LoginReqType, LoginResType } from '@/types/login'
-import { CaptchaType, UserInfoType } from '../types/login'
+import { CaptchaType, UserInfoType } from '../types/login/index.d.tsx'
 
 // 请求登录接口枚举
 enum LoginAPI {

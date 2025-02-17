@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
-
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -13,19 +12,19 @@ export default defineConfig({
       iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
       // Specify symbolId format
       symbolId: 'icon-[dir]-[name]',
-    })
+    }),
   ],
   resolve: {
     alias: {
       '@': path.resolve('./src'),
-    }
+    },
   },
   // 样式配置
   css: {
     preprocessorOptions: {
       scss: {
         // javascriptEnabled: true,
-        additionalData: '@import "@/styles/variable.scss";',
+        additionalData: '@use "@/styles/variable.scss" as *;',
       },
     },
   },

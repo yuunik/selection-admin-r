@@ -6,6 +6,7 @@ import Cookie from 'js-cookie'
 import { loginApi } from '@/apis/loginApi.tsx'
 import type { LoginReqType } from '@/types/login'
 import { getUserInfoApi } from '@/apis/loginApi.tsx'
+import type { UserStateType } from '@/types'
 
 // 用户信息 reducer
 const userStore = createSlice({
@@ -15,7 +16,7 @@ const userStore = createSlice({
     token: Cookie.get('token') || '',
     // 用户信息
     userInfo: {},
-  },
+  } as UserStateType,
   reducers: {
     // 保存用户 token
     saveToken(state, action) {
