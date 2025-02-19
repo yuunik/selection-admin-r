@@ -3,6 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: $base-transition;
 
   // 网页logo
   .website-logo {
@@ -14,5 +15,6 @@
   .website-name {
     font-size: 25px;
     color: white;
+    transition: $base-transition;
   }
 }

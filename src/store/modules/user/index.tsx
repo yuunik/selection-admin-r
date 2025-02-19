@@ -36,11 +36,15 @@ const userStore = createSlice({
     saveUserInfo(state, actions) {
       state.userInfo = actions.payload
     },
+    // 修改菜单栏折叠状态
+    saveCollapsed(state, actions) {
+      state.collapsed = actions.payload
+    },
   },
 })
 
 // 导出 actions
-const { saveToken, saveUserInfo } = userStore.actions
+const { saveToken, saveUserInfo, saveCollapsed } = userStore.actions
 
 // 异步 actions
 // 用户登录
@@ -79,8 +83,8 @@ const fetchUserInfo = () => {
   }
 }
 
-// 导出异步 actions
-export { fetchLogin, fetchUserInfo }
+// 导出 action
+export { fetchLogin, fetchUserInfo, saveCollapsed }
 
 const userReducer = userStore.reducer
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { message, notification } from 'antd'
+import { Button, message, notification } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
 import store from '@/store'
@@ -11,6 +11,7 @@ import WebsiteLogo from './components/WebsiteLogo'
 import './index.scss'
 import settings from '@/settings'
 import CustomMenu from './components/CustomMenu'
+import { saveCollapsed } from '../store/modules/user'
 
 const Layout: React.FC = () => {
   // 获取dispatch
@@ -18,7 +19,7 @@ const Layout: React.FC = () => {
   // 获取导航
   const navigate = useNavigate()
   // 获取用户信息
-  const { userInfo } = useSelector(
+  const { userInfo, collapsed } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.userReducer,
   )
   // 获取网站设置
@@ -58,10 +59,15 @@ const Layout: React.FC = () => {
     }
   }, [userInfo])
 
+  // 菜单栏折叠
+  const handleToggle = () => {
+    dispatch(saveCollapsed(!collapsed))
+  }
+
   return (
     <div className="layout-container">
       {/* 左侧菜单栏 */}
-      <nav className="layout-slider">
+      <nav className={`layout-slider ${collapsed ? 'fold' : ''}`}>
         {/* 网页logo */}
         {isShowLogo && (
           <WebsiteLogo logoUrl={logoUrl} websiteName={websiteTitle} />
@@ -70,9 +76,13 @@ const Layout: React.FC = () => {
         <CustomMenu />
       </nav>
       {/* 右侧内容 */}
-      <div className="layout-main">
+      <div className={`layout-main ${collapsed ? 'expand' : ''}`}>
         {/* 头部导航栏 */}
-        <header className="main-tabbar"></header>
+        <header className="main-tabbar">
+          <Button type="primary" onClick={handleToggle}>
+            按钮1
+          </Button>
+        </header>
         {/* 内容区域 */}
         <main className="main-content">content</main>
       </div>

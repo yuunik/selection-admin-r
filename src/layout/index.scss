@@ -8,12 +8,18 @@
     width: $base-menu-width;
     height: 100%;
     background-color: $base-menu-bg-color;
+    transition: $base-transition;
+
+    &.fold {
+      width: $base-menu-collapsed-width;
+    }
   }
 
   // 右侧内容区
   .layout-main {
     width: calc(100% - $base-menu-width);
     height: 100%;
+    transition: $base-transition;
 
     // 内容区顶部工具栏
     .main-tabbar {
@@ -28,6 +34,11 @@
       overflow: auto;
       padding: 20px;
       box-sizing: border-box;
+    }
+
+    // 展开后的宽度
+    &.expand {
+      width: calc(100% - $base-menu-collapsed-width);
     }
   }
 }
