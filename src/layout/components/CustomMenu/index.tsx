@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 
 import store from '@/store'
 import type { RouteType } from '@/types/index.d.tsx'
+import { useNavigate } from 'react-router-dom'
 
 type MenuItem = Required<MenuProps>['items'][number]
 
@@ -55,6 +56,13 @@ const CustomMenu: React.FC = () => {
     setMenuItems(getMenuItems(menuRoutes))
   }, [menuRoutes])
 
+  // 获取导航
+  const navigate = useNavigate()
+  // 点击菜单项，跳转页面
+  const onGoToPage: MenuProps['onClick'] = ({ key }) => {
+    navigate(key)
+  }
+
   return (
     <Menu
       defaultSelectedKeys={['/']}
@@ -63,6 +71,7 @@ const CustomMenu: React.FC = () => {
       theme="dark"
       inlineCollapsed={collapsed}
       items={menuItems}
+      onClick={onGoToPage}
     />
   )
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, message, notification } from 'antd'
-import { useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 import store from '@/store'
 import { fetchUserInfo } from '@/store/modules/user'
@@ -84,7 +84,10 @@ const Layout: React.FC = () => {
           </Button>
         </header>
         {/* 内容区域 */}
-        <main className="main-content">content</main>
+        <main className="main-content">
+          {/* 二级路由内容 */}
+          <Outlet />
+        </main>
       </div>
     </div>
   )
