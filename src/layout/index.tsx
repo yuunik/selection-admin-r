@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, message, notification } from 'antd'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import store from '@/store'
 import { fetchUserInfo } from '@/store/modules/user'
 import { greeting } from '@/utils'
 import WebsiteLogo from './components/WebsiteLogo'
-
-import './index.scss'
 import settings from '@/settings'
 import CustomMenu from './components/CustomMenu'
-import { saveCollapsed } from '../store/modules/user'
+import { saveCollapsed } from '@/store/modules/user'
+import MainContent from './components/MainContent'
+
+import './index.scss'
 
 const Layout: React.FC = () => {
   // 获取dispatch
@@ -86,7 +87,7 @@ const Layout: React.FC = () => {
         {/* 内容区域 */}
         <main className="main-content">
           {/* 二级路由内容 */}
-          <Outlet />
+          <MainContent />
         </main>
       </div>
     </div>
