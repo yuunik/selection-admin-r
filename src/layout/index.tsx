@@ -10,6 +10,7 @@ import WebsiteLogo from './components/WebsiteLogo'
 
 import './index.scss'
 import settings from '@/settings'
+import CustomMenu from './components/CustomMenu'
 
 const Layout: React.FC = () => {
   // 获取dispatch
@@ -65,6 +66,8 @@ const Layout: React.FC = () => {
         {isShowLogo && (
           <WebsiteLogo logoUrl={logoUrl} websiteName={websiteTitle} />
         )}
+        {/* 菜单栏 */}
+        <CustomMenu />
       </nav>
       {/* 右侧内容 */}
       <div className="layout-main">

@@ -4,9 +4,10 @@ import type { Dispatch } from '@reduxjs/toolkit'
 import Cookie from 'js-cookie'
 
 import { loginApi } from '@/apis/loginApi.tsx'
-import type { LoginReqType } from '@/types/login'
+import type { LoginReqType } from '@/types/login/index.d'
 import { getUserInfoApi } from '@/apis/loginApi.tsx'
-import type { UserStateType } from '@/types'
+import type { UserStateType } from '@/types/index.d'
+import constantRoutes from '@/router/routes'
 
 // 用户信息 reducer
 const userStore = createSlice({
@@ -16,6 +17,10 @@ const userStore = createSlice({
     token: Cookie.get('token') || '',
     // 用户信息
     userInfo: {},
+    // 路由权限
+    menuRoutes: constantRoutes,
+    // 菜单栏折叠状态
+    collapsed: false,
   } as UserStateType,
   reducers: {
     // 保存用户 token
