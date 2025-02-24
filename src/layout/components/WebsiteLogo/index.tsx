@@ -14,7 +14,7 @@ interface Props {
 const WebsiteLogo: React.FC<Props> = ({ logoUrl, websiteName }) => {
   // 获取侧边栏收缩状态
   const { collapsed } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.userReducer,
+    (state: ReturnType<typeof store.getState>) => state.layoutSettingReducer,
   )
 
   return (

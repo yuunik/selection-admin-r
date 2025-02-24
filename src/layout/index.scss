@@ -24,13 +24,11 @@
     // 内容区顶部工具栏
     .main-tabbar {
       height: $base-tabbar-height;
-      background-color: #10aeff;
     }
 
     // 内容区主体内容
     .main-content {
       height: calc(100% - $base-tabbar-height);
-      background-color: aquamarine;
       overflow: auto;
       padding: 20px;
       box-sizing: border-box;

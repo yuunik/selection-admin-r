@@ -34,6 +34,10 @@ export type UserStateType = {
   userInfo: UserInfoType
   /* 菜单路由 */
   menuRoutes: RouteType[]
+}
+
+// 布局设置状态管理库数据类型
+export type LayoutSettingStateType = {
   /* 菜单栏折叠状态 */
   collapsed: boolean
 }

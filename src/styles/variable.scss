@@ -3,6 +3,18 @@
  */
 $color-primary: #0A7EA4;
 
+// 路由变换动画
+@keyframes base-router-animation {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 // 第三方登录图标共享样式
 @mixin iconTheme {
   font-size: 25px;
@@ -36,10 +48,13 @@ $base-menu-collapsed-width: 80px;
 $base-menu-bg-color: #001529;
 
 // logo 高度
-$base-logo-height: 50px;
+$base-logo-container-height: 50px;
 
 // 顶部tabbar高度
 $base-tabbar-height: 50px;
 
 // 基础变化
 $base-transition: 0.25s all linear;
+
+// 网站logo大小
+$base-logo-size: 45px;

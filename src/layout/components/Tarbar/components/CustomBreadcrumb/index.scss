@@ -1,0 +1,10 @@
+.breadcrumb-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+
+  & > :first-child {
+    margin-right: 10px;
+    cursor: pointer;
+  }
+}

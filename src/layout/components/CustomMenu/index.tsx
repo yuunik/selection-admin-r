@@ -2,20 +2,29 @@ import React, { useEffect, useState } from 'react'
 import { Menu } from 'antd'
 import type { MenuProps } from 'antd'
 import { useSelector } from 'react-redux'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import store from '@/store'
-import type { RouteType } from '@/types/index.d.ts'
-import { useNavigate } from 'react-router-dom'
+import type { RouteType } from '@/types'
 
 type MenuItem = Required<MenuProps>['items'][number]
 
 const CustomMenu: React.FC = () => {
-  // 菜单路由
-  const { menuRoutes, collapsed } = useSelector(
+  // 获取菜单路由
+  const { menuRoutes } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.userReducer,
+  )
+  // 获取布局设置信息
+  const { collapsed } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.layoutSettingReducer,
   )
   // 菜单项列表
   const [menuItems, setMenuItems] = useState<MenuItem[]>()
+  const { pathname } = useLocation()
+  // 当前选中项
+  const [current, setCurrent] = useState<string[]>()
+  // 默认展开的菜单项
+  const [defaultOpenKeys] = useState<string>(`/${pathname.split('/')[1]}`)
 
   // 获取菜单项列表
   const getMenuItems = (menuRoutes: RouteType[]) => {
@@ -56,17 +65,23 @@ const CustomMenu: React.FC = () => {
     setMenuItems(getMenuItems(menuRoutes))
   }, [menuRoutes])
 
+  useEffect(() => {
+    // 设置默认展开的菜单项
+    setCurrent([pathname])
+  }, [pathname])
+
   // 获取导航
   const navigate = useNavigate()
   // 点击菜单项，跳转页面
   const onGoToPage: MenuProps['onClick'] = ({ key }) => {
     navigate(key)
+    setCurrent([key])
   }
 
   return (
     <Menu
-      defaultSelectedKeys={['/']}
-      defaultOpenKeys={['sub1']}
+      selectedKeys={current}
+      defaultOpenKeys={[defaultOpenKeys]}
       mode="inline"
       theme="dark"
       inlineCollapsed={collapsed}

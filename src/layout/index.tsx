@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, message, notification } from 'antd'
+import { message, notification } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
 import store from '@/store'
 import { fetchUserInfo } from '@/store/modules/user'
 import { greeting } from '@/utils'
 import WebsiteLogo from './components/WebsiteLogo'
-import settings from '@/settings'
 import CustomMenu from './components/CustomMenu'
-import { saveCollapsed } from '@/store/modules/user'
 import MainContent from './components/MainContent'
+import Tabbar from './components/Tarbar'
 
 import './index.scss'
+import settings from '@/settings'
 
 const Layout: React.FC = () => {
   // 获取dispatch
@@ -20,8 +20,12 @@ const Layout: React.FC = () => {
   // 获取导航
   const navigate = useNavigate()
   // 获取用户信息
-  const { userInfo, collapsed } = useSelector(
+  const { userInfo } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.userReducer,
+  )
+  // 获取布局设置信息
+  const { collapsed } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.layoutSettingReducer,
   )
   // 获取网站设置
   const { logoUrl, websiteTitle, isShowLogo } = settings
@@ -47,6 +51,7 @@ const Layout: React.FC = () => {
 
   // 显示欢迎信息
   const [isShowGreeting, setIsShowGreeting] = useState(false)
+  // 显示欢迎信息
   useEffect(() => {
     if (!isShowGreeting && userInfo.id) {
       // 显示问候语
@@ -59,11 +64,6 @@ const Layout: React.FC = () => {
       setIsShowGreeting(true)
     }
   }, [userInfo])
-
-  // 菜单栏折叠
-  const handleToggle = () => {
-    dispatch(saveCollapsed(!collapsed))
-  }
 
   return (
     <div className="layout-container">
@@ -80,9 +80,7 @@ const Layout: React.FC = () => {
       <div className={`layout-main ${collapsed ? 'expand' : ''}`}>
         {/* 头部导航栏 */}
         <header className="main-tabbar">
-          <Button type="primary" onClick={handleToggle}>
-            按钮1
-          </Button>
+          <Tabbar />
         </header>
         {/* 内容区域 */}
         <main className="main-content">

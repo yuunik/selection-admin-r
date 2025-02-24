@@ -27,6 +27,7 @@ const Trademark = lazy(() => import('@/pages/prod/trademark'))
 const Attr = lazy(() => import('@/pages/prod/attr'))
 const Sku = lazy(() => import('@/pages/prod/sku'))
 const Spu = lazy(() => import('@/pages/prod/spu'))
+const Screen = lazy(() => import('@/pages/screen'))
 
 // 二级路由
 const HomePage = lazy(() => import('@/pages/home'))
@@ -76,7 +77,7 @@ const constantRoutes: RouteType[] = [
     path: '/screen',
     element: (
       <Suspense fallback={<div>Loading...</div>}>
-        <Layout />
+        <Screen />
       </Suspense>
     ),
     name: 'screen',

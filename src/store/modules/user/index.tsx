@@ -19,8 +19,6 @@ const userStore = createSlice({
     userInfo: {},
     // 路由权限
     menuRoutes: constantRoutes,
-    // 菜单栏折叠状态
-    collapsed: false,
   } as UserStateType,
   reducers: {
     // 保存用户 token
@@ -36,15 +34,11 @@ const userStore = createSlice({
     saveUserInfo(state, actions) {
       state.userInfo = actions.payload
     },
-    // 修改菜单栏折叠状态
-    saveCollapsed(state, actions) {
-      state.collapsed = actions.payload
-    },
   },
 })
 
 // 导出 actions
-const { saveToken, saveUserInfo, saveCollapsed } = userStore.actions
+const { saveToken, saveUserInfo } = userStore.actions
 
 // 异步 actions
 // 用户登录
@@ -84,7 +78,7 @@ const fetchUserInfo = () => {
 }
 
 // 导出 action
-export { fetchLogin, fetchUserInfo, saveCollapsed }
+export { fetchLogin, fetchUserInfo }
 
 const userReducer = userStore.reducer
 
