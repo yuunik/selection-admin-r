@@ -4,7 +4,7 @@ import type { MenuProps } from 'antd'
 import { useSelector } from 'react-redux'
 
 import store from '@/store'
-import type { RouteType } from '@/types/index.d.tsx'
+import type { RouteType } from '@/types/index.d.ts'
 import { useNavigate } from 'react-router-dom'
 
 type MenuItem = Required<MenuProps>['items'][number]

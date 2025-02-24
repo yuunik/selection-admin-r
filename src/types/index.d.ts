@@ -2,7 +2,7 @@
 import React from 'react'
 import type { RouteObject } from 'react-router-dom'
 
-import type { UserInfoType } from './login/index.d.tsx'
+import type { UserInfoType } from './login'
 
 export type ResType<T> = {
   /* 业务状态码 */

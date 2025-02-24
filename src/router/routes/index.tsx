@@ -1,11 +1,32 @@
 import { Suspense, lazy } from 'react'
 import { Navigate } from 'react-router-dom'
-import type { RouteType } from '@/types/index.d.tsx'
-import { HomeOutlined } from '@ant-design/icons'
+import {
+  CrownOutlined,
+  DeploymentUnitOutlined,
+  FundProjectionScreenOutlined,
+  HomeOutlined,
+  IdcardOutlined,
+  InfoCircleOutlined,
+  LockOutlined,
+  ShopOutlined,
+  TrademarkOutlined,
+  UnorderedListOutlined,
+  UserOutlined,
+} from '@ant-design/icons'
 
+import type { RouteType } from '@/types'
+
+// 一级路由
 const Layout = lazy(() => import('@/layout'))
 const Login = lazy(() => import('@/pages/login'))
 const NotFound = lazy(() => import('@/pages/404'))
+const User = lazy(() => import('@/pages/acl/user'))
+const Role = lazy(() => import('@/pages/acl/role'))
+const Permission = lazy(() => import('@/pages/acl/permission'))
+const Trademark = lazy(() => import('@/pages/prod/trademark'))
+const Attr = lazy(() => import('@/pages/prod/attr'))
+const Sku = lazy(() => import('@/pages/prod/sku'))
+const Spu = lazy(() => import('@/pages/prod/spu'))
 
 // 二级路由
 const HomePage = lazy(() => import('@/pages/home'))
@@ -49,6 +70,122 @@ const constantRoutes: RouteType[] = [
     meta: {
       title: '布局页',
       isShow: false,
+    },
+  },
+  {
+    path: '/screen',
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <Layout />
+      </Suspense>
+    ),
+    name: 'screen',
+    meta: {
+      title: '数据大屏',
+      isShow: true,
+      icon: <FundProjectionScreenOutlined />,
+    },
+  },
+  {
+    path: '/acl',
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <Layout />
+      </Suspense>
+    ),
+    name: 'acl',
+    children: [
+      {
+        path: '/acl/user',
+        element: <User />,
+        name: 'user',
+        meta: {
+          title: '用户管理',
+          isShow: true,
+          icon: <UserOutlined />,
+        },
+      },
+      {
+        path: '/acl/role',
+        element: <Role />,
+        name: 'role',
+        meta: {
+          title: '角色管理',
+          isShow: true,
+          icon: <IdcardOutlined />,
+        },
+      },
+      {
+        path: '/acl/permission',
+        element: <Permission />,
+        name: 'permission',
+        meta: {
+          title: '权限管理',
+          isShow: true,
+          icon: <UnorderedListOutlined />,
+        },
+      },
+    ],
+    meta: {
+      title: '权限管理',
+      isShow: true,
+      icon: <LockOutlined />,
+    },
+  },
+  {
+    path: '/prod',
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <Layout />
+      </Suspense>
+    ),
+    name: 'prod',
+    children: [
+      {
+        path: '/prod/trademark',
+        element: <Trademark />,
+        name: 'trademark',
+        meta: {
+          title: '品牌管理',
+          isShow: true,
+          icon: <TrademarkOutlined />,
+        },
+      },
+      {
+        path: '/prod/attr',
+        element: <Attr />,
+        name: 'attr',
+        meta: {
+          title: '属性管理',
+          isShow: true,
+          icon: <InfoCircleOutlined />,
+        },
+      },
+      {
+        path: '/prod/sku',
+        element: <Sku />,
+        name: 'sku',
+        meta: {
+          title: 'SKU管理',
+          isShow: true,
+          icon: <CrownOutlined />,
+        },
+      },
+      {
+        path: '/prod/spu',
+        element: <Spu />,
+        name: 'spu',
+        meta: {
+          title: 'SPU管理',
+          isShow: true,
+          icon: <DeploymentUnitOutlined />,
+        },
+      },
+    ],
+    meta: {
+      title: '商品管理',
+      isShow: true,
+      icon: <ShopOutlined />,
     },
   },
   {
