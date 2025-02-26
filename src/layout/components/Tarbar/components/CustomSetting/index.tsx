@@ -5,9 +5,8 @@ import {
   FullscreenOutlined,
   ReloadOutlined,
   SettingOutlined,
-  UserOutlined,
 } from '@ant-design/icons'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 
 import store from '@/store'
@@ -18,6 +17,10 @@ import './index.scss'
 const CustomSetting = () => {
   // 获取dispatch
   const dispatch = useDispatch<typeof store.dispatch>()
+  // 获取用户信息
+  const userInfo = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.userReducer.userInfo,
+  )
 
   // 刷新页面
   const onRefresh = () => {
@@ -83,7 +86,7 @@ const CustomSetting = () => {
         <Button size="small" shape="circle" icon={<SettingOutlined />} />
       </Tooltip>
       {/* 用户头像 */}
-      <Avatar size="small" icon={<UserOutlined />} />
+      <Avatar size="small" src={userInfo.avatar} />
       {/* 用户名 */}
       <Dropdown
         menu={{
@@ -98,7 +101,7 @@ const CustomSetting = () => {
       >
         <a>
           <Space>
-            <em>用户名</em>
+            <em>{userInfo.name}</em>
             <DownOutlined />
           </Space>
         </a>
