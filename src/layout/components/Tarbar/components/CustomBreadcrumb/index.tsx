@@ -2,11 +2,14 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import { Breadcrumb } from 'antd'
+import { useMatches } from 'react-router-dom'
 
 import store from '@/store'
+import { handleCollapse } from '@/store/modules/setting'
+import useMeta from '@/hooks/useMeta.tsx'
+import type { RouteMetaType } from '@/types'
 
 import './index.scss'
-import { handleCollapse } from '../../../../../store/modules/setting'
 
 const CustomBreadcrumb: React.FC = () => {
   // 获取布局设置信息
@@ -22,6 +25,32 @@ const CustomBreadcrumb: React.FC = () => {
     dispatch(handleCollapse(!collapsed))
   }
 
+  const pathnameArr = useMatches().map((match) => match.pathname)
+  const metaArr = useMeta(pathnameArr)
+  // 面包屑导航数据
+  const breadcrumbArr = metaArr
+    .map(
+      ({
+        title,
+        icon,
+        pathname: href,
+        isShow,
+      }: RouteMetaType & { pathname: string }) => {
+        if (isShow) {
+          return {
+            href,
+            title: (
+              <>
+                {icon}
+                <span>{title}</span>
+              </>
+            ),
+          }
+        }
+      },
+    )
+    .filter((item) => item !== undefined)
+
   return (
     <div className="breadcrumb-container">
       {/* 折叠图标 */}
@@ -29,22 +58,7 @@ const CustomBreadcrumb: React.FC = () => {
         {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
       </div>
       {/* 面包屑导航 */}
-      <Breadcrumb
-        items={[
-          {
-            title: 'Home',
-          },
-          {
-            title: <a href="">Application Center</a>,
-          },
-          {
-            title: <a href="">Application List</a>,
-          },
-          {
-            title: 'An Application',
-          },
-        ]}
-      />
+      <Breadcrumb items={breadcrumbArr} />
     </div>
   )
 }

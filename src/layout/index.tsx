@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { message, notification } from 'antd'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import store from '@/store'
 import { fetchUserInfo } from '@/store/modules/user'
@@ -10,9 +10,10 @@ import WebsiteLogo from './components/WebsiteLogo'
 import CustomMenu from './components/CustomMenu'
 import MainContent from './components/MainContent'
 import Tabbar from './components/Tarbar'
+import useRedirect from '@/hooks/useRedirect.tsx'
+import settings from '@/settings'
 
 import './index.scss'
-import settings from '@/settings'
 
 const Layout: React.FC = () => {
   // 获取dispatch
@@ -29,11 +30,6 @@ const Layout: React.FC = () => {
   )
   // 获取网站设置
   const { logoUrl, websiteTitle, isShowLogo } = settings
-
-  // 组件挂载时获取用户信息
-  useEffect(() => {
-    getUserInfo()
-  }, [])
 
   // 问候语提示工具
   const { timeMsg, timeIcon } = greeting()
@@ -64,6 +60,18 @@ const Layout: React.FC = () => {
       setIsShowGreeting(true)
     }
   }, [userInfo])
+
+  // 组件挂载时获取用户信息
+  useEffect(() => {
+    getUserInfo()
+  }, [])
+
+  const redirect = useRedirect()
+  const location = useLocation()
+  // 主页重定向
+  useEffect(() => {
+    redirect(location.pathname)
+  }, [location.pathname])
 
   return (
     <div className="layout-container">

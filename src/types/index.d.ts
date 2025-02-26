@@ -13,17 +13,20 @@ export type ResType<T> = {
   data: T
 }
 
+// 路由元信息类型
+export type RouteMetaType = {
+  title?: string
+  icon?: React.ReactNode
+  isShow?: boolean
+}
+
 // 路由类型
 export type RouteType = RouteObject & {
   /* 路由名称 */
   name?: string
   children?: RouteType[]
   /* 路由源信息 */
-  meta?: {
-    title?: string
-    icon?: React.ReactNode
-    isShow?: boolean
-  }
+  meta?: RouteMetaType
 }
 
 // 用户状态管理库状态类型

@@ -72,6 +72,7 @@ const constantRoutes: RouteType[] = [
       title: '布局页',
       isShow: false,
     },
+    loader: () => ({ title: '布局页', isShow: false }),
   },
   {
     path: '/screen',
