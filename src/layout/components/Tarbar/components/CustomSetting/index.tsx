@@ -6,14 +6,30 @@ import {
   SettingOutlined,
   UserOutlined,
 } from '@ant-design/icons'
+import { useDispatch } from 'react-redux'
+
+import store from '@/store'
+import { handleKey } from '@/store/modules/setting'
 
 import './index.scss'
 
 const CustomSetting = () => {
+  // 获取dispatch
+  const dispatch = useDispatch<typeof store.dispatch>()
+  // 刷新页面
+  const onRefresh = () => {
+    dispatch(handleKey())
+  }
+
   return (
     <div className="website-setting">
-      <Tooltip title="重置">
-        <Button size="small" shape="circle" icon={<ReloadOutlined />} />
+      <Tooltip title="刷新">
+        <Button
+          size="small"
+          shape="circle"
+          icon={<ReloadOutlined />}
+          onClick={onRefresh}
+        />
       </Tooltip>
       <Tooltip title="全屏">
         <Button size="small" shape="circle" icon={<FullscreenOutlined />} />

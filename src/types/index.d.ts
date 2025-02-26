@@ -43,4 +43,6 @@ export type UserStateType = {
 export type LayoutSettingStateType = {
   /* 菜单栏折叠状态 */
   collapsed: boolean
+  /* 二级路由的 key 值*/
+  key: number
 }
