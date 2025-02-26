@@ -7,6 +7,8 @@ import { CaptchaType, UserInfoType } from '../types/login'
 enum LoginAPI {
   LOGIN = '/admin/system/index/login',
   GENERATE_CAPTCHA = '/admin/system/index/getValidateCode',
+  GET_USER_INFO = '/admin/system/index/getUserInfo',
+  LOGOUT = '/admin/system/index/logout',
 }
 
 // 用户登录
@@ -27,6 +29,13 @@ export const generateCaptchaApi = () =>
 // 获取用户信息
 export const getUserInfoApi = () =>
   request<ResType<UserInfoType>>({
-    url: '/admin/system/index/getUserInfo',
+    url: LoginAPI.GET_USER_INFO,
+    method: 'GET',
+  })
+
+// 退出登录
+export const logoutApi = () =>
+  request<ResType<any>>({
+    url: LoginAPI.LOGOUT,
     method: 'GET',
   })

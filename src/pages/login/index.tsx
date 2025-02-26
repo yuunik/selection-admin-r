@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FormProps, Image, message } from 'antd'
 import { Form, Input, Button, Divider } from 'antd'
 import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   QqOutlined,
   WechatOutlined,
@@ -90,6 +90,8 @@ const Login: React.FC = () => {
     }, 1000)
   }
 
+  const [search] = useSearchParams()
+  const hadRedirect = search.get('redirect')
   // 用户登录
   const handleLogin: FormProps<LoginFormProps>['onFinish'] = async (values) => {
     try {
@@ -109,7 +111,7 @@ const Login: React.FC = () => {
       // 登录成功
       message.success('登录成功')
       // 路由跳转
-      navigate('/')
+      navigate(hadRedirect ? hadRedirect : '/')
     } catch (error) {
       // 按钮载入状态
       setLoading(false)

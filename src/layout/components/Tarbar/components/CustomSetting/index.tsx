@@ -1,4 +1,12 @@
-import { Avatar, Button, Dropdown, Popconfirm, Space, Tooltip } from 'antd'
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  message,
+  Popconfirm,
+  Space,
+  Tooltip,
+} from 'antd'
 import {
   DownOutlined,
   FullscreenExitOutlined,
@@ -14,7 +22,8 @@ import { handleKey } from '@/store/modules/setting'
 
 import './index.scss'
 import { logout } from '../../../../../store/modules/user'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { logoutApi } from '../../../../../apis/loginApi.tsx'
 
 const CustomSetting = () => {
   // 获取dispatch
@@ -66,12 +75,22 @@ const CustomSetting = () => {
 
   // 获取导航
   const navigate = useNavigate()
+  // 获取当前页面路径
+  const location = useLocation()
   // 退出登录
-  const onLogout = () => {
-    // 清空相关信息
-    dispatch(logout())
-    // 跳转到登录页面
-    navigate('/login')
+  const onLogout = async () => {
+    // 退出登录
+    const {
+      data: { code },
+    } = await logoutApi()
+    if (code === 200) {
+      // 清空相关信息
+      dispatch(logout())
+      // 跳转到登录页面
+      navigate(`/login?redirect=${location.pathname}`)
+    } else {
+      message.error('网络异常, 请稍后再试...')
+    }
   }
 
   return (
