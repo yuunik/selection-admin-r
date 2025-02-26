@@ -8,6 +8,7 @@ import type { LoginReqType } from '@/types/login/index.d'
 import { getUserInfoApi } from '@/apis/loginApi.tsx'
 import type { UserStateType } from '@/types/index.d'
 import constantRoutes from '@/router/routes'
+import { UserInfoType } from '../../../types/login'
 
 // 用户信息 reducer
 const userStore = createSlice({
@@ -34,11 +35,18 @@ const userStore = createSlice({
     saveUserInfo(state, actions) {
       state.userInfo = actions.payload
     },
+    // 退出登录
+    logout(state) {
+      // 清除用户 token
+      Cookie.remove('token')
+      // 清除用户信息
+      state.userInfo = {} as UserInfoType
+    },
   },
 })
 
 // 导出 actions
-const { saveToken, saveUserInfo } = userStore.actions
+const { saveToken, saveUserInfo, logout } = userStore.actions
 
 // 异步 actions
 // 用户登录
@@ -78,7 +86,7 @@ const fetchUserInfo = () => {
 }
 
 // 导出 action
-export { fetchLogin, fetchUserInfo }
+export { fetchLogin, fetchUserInfo, logout }
 
 const userReducer = userStore.reducer
 

@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 import type { LayoutSettingStateType } from '@/types'
 
-const useLayoutSettingStore = createSlice({
+const layoutSettingStore = createSlice({
   name: 'layoutSettingReducer',
   initialState: {
     // 菜单栏是否折叠
@@ -20,10 +20,10 @@ const useLayoutSettingStore = createSlice({
   },
 })
 
-const { handleCollapse, handleKey } = useLayoutSettingStore.actions
+const { handleCollapse, handleKey } = layoutSettingStore.actions
 // 导出 action
 export { handleCollapse, handleKey }
 
 // 导出 reducer
-const layoutSettingReducer = useLayoutSettingStore.reducer
+const layoutSettingReducer = layoutSettingStore.reducer
 export default layoutSettingReducer

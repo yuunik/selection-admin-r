@@ -1,4 +1,4 @@
-import { Avatar, Button, Dropdown, Space, Tooltip } from 'antd'
+import { Avatar, Button, Dropdown, Popconfirm, Space, Tooltip } from 'antd'
 import {
   DownOutlined,
   FullscreenExitOutlined,
@@ -13,6 +13,8 @@ import store from '@/store'
 import { handleKey } from '@/store/modules/setting'
 
 import './index.scss'
+import { logout } from '../../../../../store/modules/user'
+import { useNavigate } from 'react-router-dom'
 
 const CustomSetting = () => {
   // 获取dispatch
@@ -62,6 +64,16 @@ const CustomSetting = () => {
     }
   }, [])
 
+  // 获取导航
+  const navigate = useNavigate()
+  // 退出登录
+  const onLogout = () => {
+    // 清空相关信息
+    dispatch(logout())
+    // 跳转到登录页面
+    navigate('/login')
+  }
+
   return (
     <div className="website-setting">
       <Tooltip title="刷新">
@@ -94,7 +106,17 @@ const CustomSetting = () => {
             {
               key: '4',
               danger: true,
-              label: '退出登录',
+              label: (
+                <Popconfirm
+                  title="提示"
+                  description="是否确认退出登录?"
+                  onConfirm={onLogout}
+                  okText="确认"
+                  cancelText="取消"
+                >
+                  退出登录
+                </Popconfirm>
+              ),
             },
           ],
         }}
