@@ -7,7 +7,7 @@ import type { LoginReqType } from '@/types/login/index.d'
 import { getUserInfoApi } from '@/apis/loginApi.tsx'
 import type { UserStateType } from '@/types/index.d'
 import { UserInfoType } from '@/types/login'
-import { RouteType } from '../../../types'
+import { RouteType } from '@/types'
 
 // 用户信息 reducer
 const userStore = createSlice({

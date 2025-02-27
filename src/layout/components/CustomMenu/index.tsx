@@ -9,11 +9,11 @@ import type { RouteType } from '@/types'
 
 type MenuItem = Required<MenuProps>['items'][number]
 
-const CustomMenu: React.FC = () => {
-  // 获取菜单路由
-  const { menuRoutes } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.userReducer,
-  )
+interface CustomMenuProps {
+  menuRoutes: RouteType[]
+}
+
+const CustomMenu: React.FC<CustomMenuProps> = ({ menuRoutes }) => {
   // 获取布局设置信息
   const { collapsed } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.layoutSettingReducer,

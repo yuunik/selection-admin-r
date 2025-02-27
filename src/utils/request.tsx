@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { message } from 'antd'
-//@ts-expect-error 忽略类型申明问题
 import Cookies from 'js-cookie'
 
 // 创建axios实例

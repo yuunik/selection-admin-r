@@ -12,7 +12,6 @@ const useMeta = (pathnameArr: string[]) => {
     (state: ReturnType<typeof store.getState>) => state.userReducer,
   )
 
-  console.log(menuRoutes)
   // 从menuRoutes中找到pathnameArr的对应项
   const getMeta = (
     pathname: string,

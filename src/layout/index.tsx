@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { notification } from 'antd'
 import { useLocation } from 'react-router-dom'
 
@@ -11,12 +11,15 @@ import MainContent from './components/MainContent'
 import Tabbar from './components/Tarbar'
 import useRedirect from '@/hooks/useRedirect.tsx'
 import settings from '@/settings'
+import { saveMenuRoutes } from '../store/modules/user'
 
 import './index.scss'
+import constantRoutes from '@/router/routes'
+import { RouteType } from '../types'
 
 const Layout: React.FC = () => {
   // 获取用户信息
-  const { userInfo } = useSelector(
+  const { userInfo, menuRoutes } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.userReducer,
   )
   // 获取布局设置信息
@@ -52,6 +55,17 @@ const Layout: React.FC = () => {
     redirect(location.pathname)
   }, [location.pathname])
 
+  const dispatch = useDispatch<typeof store.dispatch>()
+  const [routes, setRoutes] = useState([] as RouteType[])
+  // 保存用户菜单
+  useEffect(() => {
+    dispatch(saveMenuRoutes(constantRoutes))
+  }, [])
+
+  useEffect(() => {
+    setRoutes(menuRoutes)
+  }, [menuRoutes])
+
   return (
     <div className="layout-container">
       {/* 左侧菜单栏 */}
@@ -61,7 +75,7 @@ const Layout: React.FC = () => {
           <WebsiteLogo logoUrl={logoUrl} websiteName={websiteTitle} />
         )}
         {/* 菜单栏 */}
-        <CustomMenu />
+        <CustomMenu menuRoutes={routes} />
       </nav>
       {/* 右侧内容 */}
       <div className={`layout-main ${collapsed ? 'expand' : ''}`}>

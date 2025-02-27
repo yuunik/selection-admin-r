@@ -9,6 +9,10 @@ const redux = configureStore({
     // 布局设置
     layoutSettingReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 })
 
 export default redux
