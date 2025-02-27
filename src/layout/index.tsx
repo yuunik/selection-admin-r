@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { message, notification } from 'antd'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { notification } from 'antd'
+import { useLocation } from 'react-router-dom'
 
 import store from '@/store'
-import { fetchUserInfo } from '@/store/modules/user'
 import { greeting } from '@/utils'
 import WebsiteLogo from './components/WebsiteLogo'
 import CustomMenu from './components/CustomMenu'
@@ -16,10 +15,6 @@ import settings from '@/settings'
 import './index.scss'
 
 const Layout: React.FC = () => {
-  // 获取dispatch
-  const dispatch = useDispatch<typeof store.dispatch>()
-  // 获取导航
-  const navigate = useNavigate()
   // 获取用户信息
   const { userInfo } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.userReducer,
@@ -33,17 +28,6 @@ const Layout: React.FC = () => {
 
   // 问候语提示工具
   const { timeMsg, timeIcon } = greeting()
-  // 获取用户信息
-  const getUserInfo = async () => {
-    try {
-      await dispatch(fetchUserInfo())
-    } catch (error) {
-      // 用户未登录
-      message.error((error as Error).message)
-      // 跳转登录页面
-      navigate('/login')
-    }
-  }
 
   // 显示欢迎信息
   const [isShowGreeting, setIsShowGreeting] = useState(false)
@@ -60,11 +44,6 @@ const Layout: React.FC = () => {
       setIsShowGreeting(true)
     }
   }, [userInfo])
-
-  // 组件挂载时获取用户信息
-  useEffect(() => {
-    getUserInfo()
-  }, [])
 
   const redirect = useRedirect()
   const location = useLocation()

@@ -1,14 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { Dispatch } from '@reduxjs/toolkit'
-//@ts-expect-error 无相关类型定义申明
 import Cookie from 'js-cookie'
 
 import { loginApi } from '@/apis/loginApi.tsx'
 import type { LoginReqType } from '@/types/login/index.d'
 import { getUserInfoApi } from '@/apis/loginApi.tsx'
 import type { UserStateType } from '@/types/index.d'
-import constantRoutes from '@/router/routes'
-import { UserInfoType } from '../../../types/login'
+import { UserInfoType } from '@/types/login'
+import { RouteType } from '../../../types'
 
 // 用户信息 reducer
 const userStore = createSlice({
@@ -19,7 +18,7 @@ const userStore = createSlice({
     // 用户信息
     userInfo: {},
     // 路由权限
-    menuRoutes: constantRoutes,
+    menuRoutes: [] as RouteType[],
   } as UserStateType,
   reducers: {
     // 保存用户 token
@@ -42,11 +41,15 @@ const userStore = createSlice({
       // 清除用户信息
       state.userInfo = {} as UserInfoType
     },
+    // 保存路由权限
+    saveMenuRoutes(state, action) {
+      state.menuRoutes = action.payload
+    },
   },
 })
 
 // 导出 actions
-const { saveToken, saveUserInfo, logout } = userStore.actions
+const { saveToken, saveUserInfo, logout, saveMenuRoutes } = userStore.actions
 
 // 异步 actions
 // 用户登录
@@ -86,7 +89,7 @@ const fetchUserInfo = () => {
 }
 
 // 导出 action
-export { fetchLogin, fetchUserInfo, logout }
+export { fetchLogin, fetchUserInfo, logout, saveMenuRoutes }
 
 const userReducer = userStore.reducer
 

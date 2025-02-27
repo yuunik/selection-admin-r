@@ -11,6 +11,7 @@ import {
   MobileOutlined,
   MessageOutlined,
 } from '@ant-design/icons'
+import NProgress from 'nprogress'
 
 import { generateCaptchaApi } from '@/apis/loginApi.tsx'
 import store from '@/store'
@@ -145,6 +146,12 @@ const Login: React.FC = () => {
       generateCaptcha()
     }
   }, [pwdErrorCount])
+
+  useEffect(() => {
+    if (NProgress.isStarted()) {
+      NProgress.done()
+    }
+  }, [])
 
   return (
     <div className="bg">
