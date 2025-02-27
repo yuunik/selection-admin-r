@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 
 // 创建axios实例
 const request = axios.create({
-  baseURL: import.meta.env.VITE_APP_BASE_URL,
+  baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 5000,
 })
 
