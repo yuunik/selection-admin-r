@@ -3,11 +3,10 @@ import type { Dispatch } from '@reduxjs/toolkit'
 import Cookie from 'js-cookie'
 
 import { loginApi } from '@/apis/loginApi.tsx'
-import type { LoginReqType } from '@/types/login/index.d'
 import { getUserInfoApi } from '@/apis/loginApi.tsx'
-import type { UserStateType } from '@/types/index.d'
-import { UserInfoType } from '@/types/login'
-import { RouteType } from '@/types'
+import { logoutApi } from '@/apis/loginApi.tsx'
+import type { UserStateType, RouteType } from '@/types'
+import type { LoginReqType, UserInfoType } from '@/types/login'
 
 // 用户信息 reducer
 const userStore = createSlice({
@@ -35,7 +34,7 @@ const userStore = createSlice({
       state.userInfo = actions.payload
     },
     // 退出登录
-    logout(state) {
+    clearInfo(state) {
       // 清除用户 token
       Cookie.remove('token')
       // 清除用户信息
@@ -51,7 +50,7 @@ const userStore = createSlice({
 })
 
 // 导出 actions
-const { saveToken, saveUserInfo, logout, saveMenuRoutes } = userStore.actions
+const { saveToken, saveUserInfo, clearInfo, saveMenuRoutes } = userStore.actions
 
 // 异步 actions
 // 用户登录
@@ -90,8 +89,24 @@ const fetchUserInfo = () => {
   }
 }
 
+// 退出登录
+const fetchLogout = () => {
+  return async (dispatch: Dispatch) => {
+    const {
+      data: { code, message: errMsg },
+    } = await logoutApi()
+    if (code === 200) {
+      // 清除相关信息
+      dispatch(clearInfo())
+      return 'ok'
+    } else {
+      return Promise.reject(new Error(errMsg))
+    }
+  }
+}
+
 // 导出 action
-export { fetchLogin, fetchUserInfo, logout, saveMenuRoutes }
+export { fetchLogin, fetchUserInfo, fetchLogout, saveMenuRoutes }
 
 const userReducer = userStore.reducer
 

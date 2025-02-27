@@ -5,17 +5,17 @@ import { useLocation } from 'react-router-dom'
 
 import store from '@/store'
 import { greeting } from '@/utils'
+import useRedirect from '@/hooks/useRedirect.tsx'
+import settings from '@/settings'
+import { saveMenuRoutes } from '@/store/modules/user'
+import { RouteType } from '@/types'
+import constantRoutes from '@/router/routes'
 import WebsiteLogo from './components/WebsiteLogo'
 import CustomMenu from './components/CustomMenu'
 import MainContent from './components/MainContent'
 import Tabbar from './components/Tarbar'
-import useRedirect from '@/hooks/useRedirect.tsx'
-import settings from '@/settings'
-import { saveMenuRoutes } from '../store/modules/user'
 
 import './index.scss'
-import constantRoutes from '@/router/routes'
-import { RouteType } from '../types'
 
 const Layout: React.FC = () => {
   // 获取用户信息

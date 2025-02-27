@@ -1,8 +1,9 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
+
+import store from '@/store'
 
 import './index.scss'
-import { useSelector } from 'react-redux'
-import store from '../../../store'
 
 interface Props {
   // 系统Logo图片地址

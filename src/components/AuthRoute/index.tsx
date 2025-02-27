@@ -6,11 +6,14 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
 import store from '@/store'
-import { fetchUserInfo } from '@/store/modules/user'
-import { saveMenuRoutes } from '@/store/modules/user'
+import {
+  fetchUserInfo,
+  saveMenuRoutes,
+  fetchLogout,
+} from '@/store/modules/user'
 import constantRoutes from '@/router/routes'
 import settings from '@/settings'
-import useMeta from '../../hooks/useMeta.tsx'
+import useMeta from '@/hooks/useMeta.tsx'
 
 /**
  * 路由鉴权组件所接收的参数类型
@@ -52,7 +55,16 @@ const AuthRoute: React.FC<AuthRouteProp> = ({ component }) => {
           }
           // 用户信息为空则获取用户信息
           if (!Object.keys(userInfo).length) {
-            await dispatch(fetchUserInfo())
+            try {
+              // 获取用户信息
+              await dispatch(fetchUserInfo())
+            } catch (error) {
+              // 清空用户信息
+              await dispatch(fetchLogout())
+              // token 失效, 跳转登录页面
+              message.error((error as Error).message)
+              navigate('/login')
+            }
           }
         } else {
           if (location.pathname !== '/login') {
@@ -61,7 +73,10 @@ const AuthRoute: React.FC<AuthRouteProp> = ({ component }) => {
           }
         }
       } catch (error) {
+        // token 失效, 跳转登录页面
         message.error((error as Error).message)
+        // 清空用户信息
+        dispatch(fetchUserInfo())
         navigate(`/login?redirect=${location.pathname}`)
       } finally {
         setIsChecking(false)
@@ -71,6 +86,7 @@ const AuthRoute: React.FC<AuthRouteProp> = ({ component }) => {
     checkAuth()
   }, [location.pathname])
 
+  // 组件渲染完成后, 保存菜单路由
   useEffect(() => {
     // 保存菜单路由
     dispatch(saveMenuRoutes(constantRoutes))

@@ -16,14 +16,13 @@ import {
 } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import store from '@/store'
 import { handleKey } from '@/store/modules/setting'
+import { fetchLogout } from '@/store/modules/user'
 
 import './index.scss'
-import { logout } from '../../../../../store/modules/user'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { logoutApi } from '../../../../../apis/loginApi.tsx'
 
 const CustomSetting = () => {
   // 获取dispatch
@@ -79,17 +78,13 @@ const CustomSetting = () => {
   const location = useLocation()
   // 退出登录
   const onLogout = async () => {
-    // 退出登录
-    const {
-      data: { code },
-    } = await logoutApi()
-    if (code === 200) {
+    try {
       // 清空相关信息
-      await dispatch(logout())
+      await dispatch(fetchLogout())
       // 跳转到登录页面
       navigate(`/login?redirect=${location.pathname}`)
-    } else {
-      message.error('网络异常, 请稍后再试...')
+    } catch (error) {
+      message.error((error as Error).message)
     }
   }
 
