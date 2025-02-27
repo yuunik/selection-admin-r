@@ -40,6 +40,8 @@ const userStore = createSlice({
       Cookie.remove('token')
       // 清除用户信息
       state.userInfo = {} as UserInfoType
+      // 清除用户token
+      state.token = ''
     },
     // 保存路由权限
     saveMenuRoutes(state, action) {

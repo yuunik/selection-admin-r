@@ -85,7 +85,7 @@ const CustomSetting = () => {
     } = await logoutApi()
     if (code === 200) {
       // 清空相关信息
-      dispatch(logout())
+      await dispatch(logout())
       // 跳转到登录页面
       navigate(`/login?redirect=${location.pathname}`)
     } else {

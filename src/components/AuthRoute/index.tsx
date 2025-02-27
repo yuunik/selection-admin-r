@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Navigate, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { message } from 'antd'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -28,15 +28,17 @@ const AuthRoute: React.FC<AuthRouteProp> = ({ component }) => {
   const dispatch = useDispatch<typeof store.dispatch>()
   const location = useLocation()
 
+  const navigate = useNavigate()
   useEffect(() => {
     const checkAuth = async () => {
+      // 显示进度条
       NProgress.start()
       try {
         if (token) {
           // 登录状态下, 不能访问登录页面, 跳转首页
           if (location.pathname === '/login') {
             message.info('您已登录, 正在跳转首页')
-            return <Navigate to="/" replace />
+            navigate('/')
           }
           // 用户信息为空则获取用户信息
           if (!Object.keys(userInfo).length) {
@@ -45,14 +47,12 @@ const AuthRoute: React.FC<AuthRouteProp> = ({ component }) => {
         } else {
           if (location.pathname !== '/login') {
             message.warning('请先登录')
-            return (
-              <Navigate to={`/login?redirect=${location.pathname}`} replace />
-            )
+            navigate(`/login?redirect=${location.pathname}`)
           }
         }
       } catch (error) {
         message.error((error as Error).message)
-        return <Navigate to={`/login?redirect=${location.pathname}`} replace />
+        navigate(`/login?redirect=${location.pathname}`)
       } finally {
         setIsChecking(false)
         NProgress.done()
@@ -61,20 +61,18 @@ const AuthRoute: React.FC<AuthRouteProp> = ({ component }) => {
 
     checkAuth()
     dispatch(saveMenuRoutes(constantRoutes))
-  }, [token, userInfo, location])
+  }, [])
 
   if (isChecking) return <div>Loading...</div> // 显示加载动画
 
-  // 最终渲染判断
-  if (token && location.pathname !== '/login') {
+  // 登录状态下, 且有用户信息, 则渲染页面
+  if (token && userInfo?.name && location.pathname !== '/login') {
     return <>{component}</>
   }
 
-  return location.pathname === '/login' ? (
-    <>{component}</>
-  ) : (
-    <Navigate to={`/login?redirect=${location.pathname}`} replace />
-  )
+  if (!token && location.pathname === '/login') {
+    return <>{component}</>
+  }
 }
 
 export default AuthRoute
