@@ -1,8 +1,7 @@
 import { useSelector } from 'react-redux'
 
 import store from '@/store'
-import type { RouteType } from '@/types'
-import type { RouteMetaType } from '../types'
+import type { RouteType, RouteMetaType } from '@/types'
 
 /**
  * 获取当前路由的meta信息
@@ -29,7 +28,7 @@ const useMeta = (pathnameArr: string[]) => {
     }
   }
 
-  const metaArr: RouteMetaType & { pathname: string }[] = []
+  const metaArr: Array<RouteMetaType & { pathname: string }> = []
   for (const pathname of pathnameArr) {
     const meta = getMeta(pathname, menuRoutes)
     metaArr.push({

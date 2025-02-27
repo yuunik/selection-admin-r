@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useMatches, useNavigate } from 'react-router-dom'
 import { message } from 'antd'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -9,6 +9,8 @@ import store from '@/store'
 import { fetchUserInfo } from '@/store/modules/user'
 import { saveMenuRoutes } from '@/store/modules/user'
 import constantRoutes from '@/router/routes'
+import settings from '@/settings'
+import useMeta from '../../hooks/useMeta.tsx'
 
 /**
  * 路由鉴权组件所接收的参数类型
@@ -29,10 +31,18 @@ const AuthRoute: React.FC<AuthRouteProp> = ({ component }) => {
   const location = useLocation()
 
   const navigate = useNavigate()
+  const matches = useMatches()
+
+  // 获取当前路由信息
+  const meta = useMeta(matches.map((match) => match.pathname))
   useEffect(() => {
     const checkAuth = async () => {
       // 显示进度条
       NProgress.start()
+      // 获取配置信息
+      const { websiteTitle } = settings
+      // 设置网页标题
+      document.title = `${websiteTitle}/${meta.length === 1 ? meta[0].title : meta[1].title}`
       try {
         if (token) {
           // 登录状态下, 不能访问登录页面, 跳转首页
@@ -58,8 +68,11 @@ const AuthRoute: React.FC<AuthRouteProp> = ({ component }) => {
         NProgress.done()
       }
     }
-
     checkAuth()
+  }, [location.pathname])
+
+  useEffect(() => {
+    // 保存菜单路由
     dispatch(saveMenuRoutes(constantRoutes))
   }, [])
 

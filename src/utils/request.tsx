@@ -32,7 +32,7 @@ request.interceptors.response.use(
   },
   (error) => {
     // 错误信息
-    let msg = ''
+    let msg
     // 错误状态码
     const status = error.response.status
     switch (status) {
