@@ -52,23 +52,21 @@ const CustomSetting = () => {
     }
   }
 
-  // 监听屏幕大小变化
-  const onResize = () => {
-    if (
-      window.screen.width === document.documentElement.clientWidth &&
-      document.documentElement.clientHeight === window.screen.height
-    ) {
-      setIsFullscreen(true)
-    } else {
-      setIsFullscreen(false)
+  // 阻止默认全屏事件, 强制使用 api 全屏
+  const onStopUseF11 = (e: KeyboardEvent) => {
+    if (e.key === 'F11') {
+      // 阻止默认全屏事件
+      e.preventDefault()
+      // 强制使用 api 全屏
+      onSizeChange()
     }
   }
 
   // 监听屏幕大小变化
   useEffect(() => {
-    window.addEventListener('resize', onResize)
+    window.addEventListener('keydown', onStopUseF11)
     return () => {
-      window.removeEventListener('resize', onResize)
+      window.removeEventListener('keydown', onStopUseF11)
     }
   }, [])
 

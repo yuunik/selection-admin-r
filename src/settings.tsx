@@ -3,7 +3,7 @@
  */
 const settings = {
   // 系统logo文件路径
-  logoUrl: '/public/react.svg',
+  logoUrl: '/react.svg',
   // 系统名称
   websiteTitle: 'Selection Admin',
   // 是否展示网页logo
