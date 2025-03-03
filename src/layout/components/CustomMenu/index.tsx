@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Menu } from 'antd'
 import type { MenuProps } from 'antd'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import store from '@/store'
 import type { RouteType } from '@/types'
+import { handleKey } from '@/store/modules/setting'
 
 type MenuItem = Required<MenuProps>['items'][number]
 
@@ -72,10 +73,16 @@ const CustomMenu: React.FC<CustomMenuProps> = ({ menuRoutes }) => {
 
   // 获取导航
   const navigate = useNavigate()
+  // 获取dispatch
+  const dispatch = useDispatch()
   // 点击菜单项，跳转页面
   const onGoToPage: MenuProps['onClick'] = ({ key }) => {
+    // 跳转二级路由页面
     navigate(key)
+    // 设置当前选中项
     setCurrent([key])
+    // 更新key
+    dispatch(handleKey())
   }
 
   return (
