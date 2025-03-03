@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useMatches, useNavigate } from 'react-router-dom'
 import { message } from 'antd'
@@ -18,13 +18,17 @@ import useMeta from '@/hooks/useMeta.tsx'
 /**
  * 路由鉴权组件所接收的参数类型
  */
-interface AuthRouteProp {
-  component: React.ReactNode
+interface AuthRouteProps {
+  component: React.FunctionComponent // 声明接收单个React元素
 }
 
-const AuthRoute: React.FC<AuthRouteProp> = ({ component }) => {
+// 取消进度圆圈动画
+NProgress.configure({ showSpinner: false })
+
+const AuthRoute: React.FC<AuthRouteProps> = ({ component }) => {
+  const AuthComponent = memo(component)
   // 增加加载状态
-  const [isChecking, setIsChecking] = useState(true)
+  // const [isChecking, setIsChecking] = useState(true)
   // 获取当前路由信息
   const { token, userInfo } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.userReducer,
@@ -79,7 +83,7 @@ const AuthRoute: React.FC<AuthRouteProp> = ({ component }) => {
         dispatch(fetchUserInfo())
         navigate(`/login?redirect=${location.pathname}`)
       } finally {
-        setIsChecking(false)
+        //setIsChecking(false)
         NProgress.done()
       }
     }
@@ -92,15 +96,15 @@ const AuthRoute: React.FC<AuthRouteProp> = ({ component }) => {
     dispatch(saveMenuRoutes(constantRoutes))
   }, [])
 
-  if (isChecking) return <div>Loading...</div> // 显示加载动画
+  // if (isChecking) return <div>Loading...</div> // 显示加载动画
 
   // 登录状态下, 且有用户信息, 则渲染页面
   if (token && userInfo?.name && location.pathname !== '/login') {
-    return <>{component}</>
+    return <AuthComponent />
   }
 
   if (!token && location.pathname === '/login') {
-    return <>{component}</>
+    return <AuthComponent />
   }
 }
 

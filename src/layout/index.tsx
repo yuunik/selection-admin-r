@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { memo, useEffect, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { notification } from 'antd'
 import { useLocation } from 'react-router-dom'
 
@@ -7,9 +7,6 @@ import store from '@/store'
 import { greeting } from '@/utils'
 import useRedirect from '@/hooks/useRedirect.tsx'
 import settings from '@/settings'
-import { saveMenuRoutes } from '@/store/modules/user'
-import { RouteType } from '@/types'
-import constantRoutes from '@/router/routes'
 import WebsiteLogo from './components/WebsiteLogo'
 import CustomMenu from './components/CustomMenu'
 import MainContent from './components/MainContent'
@@ -27,7 +24,7 @@ const Layout: React.FC = () => {
     (state: ReturnType<typeof store.getState>) => state.layoutSettingReducer,
   )
   // 获取网站设置
-  const { logoUrl, websiteTitle, isShowLogo } = settings
+  const { logoUrl, websiteTitle, isShowLogo } = useMemo(() => settings, [])
 
   // 问候语提示工具
   const { timeMsg, timeIcon } = greeting()
@@ -52,36 +49,34 @@ const Layout: React.FC = () => {
   const location = useLocation()
   // 主页重定向
   useEffect(() => {
-    redirect(location.pathname)
+    if (location.pathname !== '/screen') {
+      redirect(location.pathname)
+    }
   }, [location.pathname])
+  // 用户权限路由
+  const routes = useMemo(() => menuRoutes, [menuRoutes])
 
-  const dispatch = useDispatch<typeof store.dispatch>()
-  const [routes, setRoutes] = useState([] as RouteType[])
-  // 保存用户菜单
-  useEffect(() => {
-    dispatch(saveMenuRoutes(constantRoutes))
-  }, [])
-
-  useEffect(() => {
-    setRoutes(menuRoutes)
-  }, [menuRoutes])
+  // Logo 做缓存处理
+  const Logo = memo(WebsiteLogo)
+  // 菜单栏做缓存处理
+  const Menu = memo(CustomMenu)
+  // Tabbar 做缓存处理
+  const Tab = memo(Tabbar)
 
   return (
     <div className="layout-container">
       {/* 左侧菜单栏 */}
       <nav className={`layout-slider ${collapsed ? 'fold' : ''}`}>
         {/* 网页logo */}
-        {isShowLogo && (
-          <WebsiteLogo logoUrl={logoUrl} websiteName={websiteTitle} />
-        )}
+        {isShowLogo && <Logo logoUrl={logoUrl} websiteName={websiteTitle} />}
         {/* 菜单栏 */}
-        <CustomMenu menuRoutes={routes} />
+        <Menu menuRoutes={routes} />
       </nav>
       {/* 右侧内容 */}
       <div className={`layout-main ${collapsed ? 'expand' : ''}`}>
         {/* 头部导航栏 */}
         <header className="main-tabbar">
-          <Tabbar />
+          <Tab />
         </header>
         {/* 内容区域 */}
         <main className="main-content">

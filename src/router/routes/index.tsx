@@ -60,7 +60,7 @@ const constantRoutes: RouteType[] = [
     children: [
       {
         path: '/home',
-        element: <AuthRoute component={<HomePage />} />,
+        element: <AuthRoute component={HomePage} />,
         name: 'homepage',
         meta: {
           title: '首页',
@@ -78,7 +78,7 @@ const constantRoutes: RouteType[] = [
     path: '/screen',
     element: (
       <Suspense fallback={<div>Loading...</div>}>
-        <AuthRoute component={<Screen />} />
+        <AuthRoute component={Screen} />
       </Suspense>
     ),
     name: 'screen',
@@ -99,7 +99,7 @@ const constantRoutes: RouteType[] = [
     children: [
       {
         path: '/acl/user',
-        element: <AuthRoute component={<User />} />,
+        element: <AuthRoute component={User} />,
         name: 'user',
         meta: {
           title: '用户管理',
@@ -109,7 +109,7 @@ const constantRoutes: RouteType[] = [
       },
       {
         path: '/acl/role',
-        element: <AuthRoute component={<Role />} />,
+        element: <AuthRoute component={Role} />,
         name: 'role',
         meta: {
           title: '角色管理',
@@ -119,7 +119,7 @@ const constantRoutes: RouteType[] = [
       },
       {
         path: '/acl/permission',
-        element: <AuthRoute component={<Permission />} />,
+        element: <AuthRoute component={Permission} />,
         name: 'permission',
         meta: {
           title: '权限管理',
@@ -145,7 +145,7 @@ const constantRoutes: RouteType[] = [
     children: [
       {
         path: '/prod/trademark',
-        element: <AuthRoute component={<Trademark />} />,
+        element: <AuthRoute component={Trademark} />,
         name: 'trademark',
         meta: {
           title: '品牌管理',
@@ -155,7 +155,7 @@ const constantRoutes: RouteType[] = [
       },
       {
         path: '/prod/attr',
-        element: <AuthRoute component={<Attr />} />,
+        element: <AuthRoute component={Attr} />,
         name: 'attr',
         meta: {
           title: '属性管理',
@@ -165,7 +165,7 @@ const constantRoutes: RouteType[] = [
       },
       {
         path: '/prod/sku',
-        element: <AuthRoute component={<Sku />} />,
+        element: <AuthRoute component={Sku} />,
         name: 'sku',
         meta: {
           title: 'SKU管理',
@@ -175,7 +175,7 @@ const constantRoutes: RouteType[] = [
       },
       {
         path: '/prod/spu',
-        element: <AuthRoute component={<Spu />} />,
+        element: <AuthRoute component={Spu} />,
         name: 'spu',
         meta: {
           title: 'SPU管理',

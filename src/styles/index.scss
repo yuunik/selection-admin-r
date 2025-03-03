@@ -8,6 +8,12 @@ body,
 }
 
 body {
+  font-size: 16px; /* 定义基准字体大小 */
+  line-height: 1.5; /* 调整行高与字体大小的比例 */
+  overflow: hidden; /* 防止溢出 */
+}
+
+body {
   margin: 0;
 }
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import { Breadcrumb } from 'antd'
@@ -11,7 +11,7 @@ import type { RouteMetaType } from '@/types'
 
 import './index.scss'
 
-const CustomBreadcrumb: React.FC = () => {
+const CustomBreadcrumb = () => {
   // 获取布局设置信息
   const { collapsed } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.layoutSettingReducer,
@@ -28,28 +28,32 @@ const CustomBreadcrumb: React.FC = () => {
   const pathnameArr = useMatches().map((match) => match.pathname)
   const metaArr = useMeta(pathnameArr)
   // 面包屑导航数据
-  const breadcrumbArr = metaArr
-    .map(
-      ({
-        title,
-        icon,
-        pathname: href,
-        isShow,
-      }: RouteMetaType & { pathname: string }) => {
-        if (isShow) {
-          return {
-            href,
-            title: (
-              <>
-                {icon}
-                <span>{title}</span>
-              </>
-            ),
-          }
-        }
-      },
-    )
-    .filter((item) => item !== undefined)
+  const breadcrumbArr = useMemo(
+    () =>
+      metaArr
+        .map(
+          ({
+            title,
+            icon,
+            pathname: href,
+            isShow,
+          }: RouteMetaType & { pathname: string }) => {
+            if (isShow) {
+              return {
+                href,
+                title: (
+                  <>
+                    {icon}
+                    <span>{title}</span>
+                  </>
+                ),
+              }
+            }
+          },
+        )
+        .filter((item) => item !== undefined),
+    [],
+  )
 
   return (
     <div className="breadcrumb-container">

@@ -1,4 +1,5 @@
 module.exports = {
+  content: ['./src/**/*.{js,jsx,ts,tsx,html}'],
   theme: {
     fontFamily: {
       display: ['Inter', 'system-ui', 'sans-serif'],

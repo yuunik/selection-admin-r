@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /**
  * Reset styles for all elements.
  */
@@ -28,16 +29,11 @@ body {
 /**
  * Render the `main` element consistently in IE.
  */
-main {
-  display: block;
-}
-
 /**
  * Correct the font size and margin on `h1` elements within `section` and
  * `article` contexts in Chrome, Firefox, and Safari.
  */
 h1 {
-  font-size: 2em;
   margin: 0.67em 0;
 }
 
@@ -318,6 +314,12 @@ body,
 #root {
   width: 100%;
   height: 100%;
+}
+
+body {
+  font-size: 16px; /* 定义基准字体大小 */
+  line-height: 1.5; /* 调整行高与字体大小的比例 */
+  overflow: hidden; /* 防止溢出 */
 }
 
 body {
