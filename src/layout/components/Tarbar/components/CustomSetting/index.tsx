@@ -24,7 +24,11 @@ import { fetchLogout } from '@/store/modules/user'
 
 import './index.scss'
 
-const CustomSetting = () => {
+interface PropsType {
+  changeCollapsed?: (value: boolean) => void
+}
+
+const CustomSetting = ({ changeCollapsed }: PropsType) => {
   // 获取dispatch
   const dispatch = useDispatch<typeof store.dispatch>()
   // 获取用户信息
@@ -107,7 +111,12 @@ const CustomSetting = () => {
         />
       </Tooltip>
       <Tooltip title="自定义设置">
-        <Button size="small" shape="circle" icon={<SettingOutlined />} />
+        <Button
+          size="small"
+          shape="circle"
+          icon={<SettingOutlined />}
+          onClick={() => changeCollapsed?.(true)}
+        />
       </Tooltip>
       {/* 用户头像 */}
       <Avatar size="small" src={userInfo.avatar} />

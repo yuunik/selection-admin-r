@@ -37,7 +37,7 @@ const MainContent = () => {
       unmountOnExit
       appear
     >
-      <div ref={nodeRef} className="h-full bg-red-500">
+      <div ref={nodeRef}>
         <Outlet />
       </div>
     </CSSTransition>
