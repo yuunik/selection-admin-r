@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FormProps, Image, message } from 'antd'
 import { Form, Input, Button, Divider } from 'antd'
 import { useDispatch } from 'react-redux'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   QqOutlined,
   WechatOutlined,
@@ -11,7 +11,6 @@ import {
   MobileOutlined,
   MessageOutlined,
 } from '@ant-design/icons'
-import NProgress from 'nprogress'
 
 import { generateCaptchaApi } from '@/apis/loginApi.tsx'
 import store from '@/store'
@@ -21,9 +20,10 @@ import './index.scss'
 import Left from '@/assets/login_left.png'
 import Logo from '@/assets/logo.png'
 
+const Item = Form.Item
+const Password = Input.Password
+
 const Login: React.FC = () => {
-  const Item = Form.Item
-  const Password = Input.Password
   // 是否为密码登录
   const [isPwdLogin, setIsPwdLogin] = useState(true)
   // 是否为注册模式
@@ -44,6 +44,8 @@ const Login: React.FC = () => {
   const [pwdErrorCount, setPwdErrorCount] = useState(0)
   // 设置按钮载入状态
   const [loading, setLoading] = useState(false)
+  // 获取路径对象
+  const location = useLocation()
 
   // 短信登录字段申明
   interface SmsFormProps {
@@ -141,17 +143,20 @@ const Login: React.FC = () => {
     }
   }
 
+  // 检车密码错误次数是否超过3次
   useEffect(() => {
     if (pwdErrorCount > 3) {
+      // 密码错误次数超过3次
+      message.info('密码错误次数超过3次，请输入验证码')
+      // 生成验证码
       generateCaptcha()
     }
   }, [pwdErrorCount])
 
+  // 页面标题
   useEffect(() => {
-    if (NProgress.isStarted()) {
-      NProgress.done()
-    }
-  }, [])
+    document.title = '登录页'
+  }, [location.pathname])
 
   return (
     <div className="bg">

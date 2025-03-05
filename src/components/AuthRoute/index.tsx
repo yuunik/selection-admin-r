@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react'
+import React, { memo, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useMatches, useNavigate } from 'react-router-dom'
 import { message } from 'antd'
@@ -29,27 +29,29 @@ const AuthRoute: React.FC<AuthRouteProps> = ({ component }) => {
   const AuthComponent = memo(component)
   // 增加加载状态
   // const [isChecking, setIsChecking] = useState(true)
-  // 获取当前路由信息
-  const { token, userInfo } = useSelector(
+  // 获取 token 和 用户信息
+  const { token, userInfo, menuRoutes } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.userReducer,
   )
-  // 获取当前路由信息
+  // 获取触发对象
   const dispatch = useDispatch<typeof store.dispatch>()
+  // 获取当前路径对象
   const location = useLocation()
-
+  // 获取路由跳转方法
   const navigate = useNavigate()
+  // 获取当前matches信息
   const matches = useMatches()
+  // 获取当前路径
+  const pathnameArr = useMemo(
+    () => matches.map((match) => match.pathname),
+    [matches],
+  )
 
-  // 获取当前路由信息
-  const meta = useMeta(matches.map((match) => match.pathname))
+  // 路由鉴权
   useEffect(() => {
     const checkAuth = async () => {
       // 显示进度条
       NProgress.start()
-      // 获取配置信息
-      const { websiteTitle } = settings
-      // 设置网页标题
-      document.title = `${websiteTitle}/${meta.length === 1 ? meta[0].title : meta[1].title}`
       try {
         if (token) {
           // 登录状态下, 不能访问登录页面, 跳转首页
@@ -95,6 +97,19 @@ const AuthRoute: React.FC<AuthRouteProps> = ({ component }) => {
     // 保存菜单路由
     dispatch(saveMenuRoutes(constantRoutes))
   }, [])
+
+  // 获取页面元信息
+  const meta = useMeta(pathnameArr)
+  // 页面标题设置
+  useEffect(() => {
+    if (menuRoutes.length !== 0) {
+      // 菜单路由存在, 则设置页面标题
+      // 获取配置信息
+      const { websiteTitle } = settings
+      // 设置网页标题
+      document.title = `${websiteTitle}/${meta[1].title}`
+    }
+  }, [menuRoutes])
 
   // if (isChecking) return <div>Loading...</div> // 显示加载动画
 
