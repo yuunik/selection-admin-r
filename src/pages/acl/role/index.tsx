@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Form, Input, Button, Table, message } from 'antd'
+import { Form, Input, Button, Table, message, Modal } from 'antd'
 import type { TableProps } from 'antd'
 import { RedoOutlined, SearchOutlined } from '@ant-design/icons'
 
-import type { SysRoleType } from '@/types/acl'
-import { PageParamsType } from '../../../types'
-import { pageRoleListApi } from '../../../apis/roleApi.tsx'
-import { RoleNameType } from '../../../types/acl'
+import type { SysRoleType, RoleNameType } from '@/types/acl'
+import type { PageParamsType } from '@/types'
+import { pageRoleListApi } from '@/apis/roleApi.tsx'
+import { addRoleApi } from '../../../apis/roleApi.tsx'
 
 const Item = Form.Item
 
@@ -114,6 +114,36 @@ const Role: React.FC = () => {
     getRoleList()
   }
 
+  // 弹窗状态
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  // 处理弹窗提交
+  const handleSubmit = async () => {
+    // 发送请求
+    const {
+      data: { code },
+    } = await addRoleApi(roleInfo)
+    if (code === 200) {
+      // 关闭弹窗
+      setIsModalOpen(false)
+      // 刷新页面
+      getRoleList()
+      // 提示成功信息
+      message.success('新增角色成功')
+    }
+  }
+
+  // 用户信息
+  const [roleInfo, setRoleInfo] = useState<SysRoleType>({} as SysRoleType)
+
+  // 打开新增用户弹窗
+  const handleOpenAddModal = () => {
+    // 重置用户信息
+    setRoleInfo({} as SysRoleType)
+    // 打开弹窗
+    setIsModalOpen(true)
+  }
+
   return (
     <div>
       {/* 角色名称搜索框 */}
@@ -150,7 +180,9 @@ const Role: React.FC = () => {
       {/* 角色列表 */}
       <div className="shadow-default mt-[20px] rounded-[4px] p-[20px]">
         {/* 新增角色按钮 */}
-        <Button type="primary">新增角色</Button>
+        <Button type="primary" onClick={handleOpenAddModal}>
+          新增角色
+        </Button>
         {/* 角色列表 */}
         <Table
           dataSource={roleListData}
@@ -171,6 +203,43 @@ const Role: React.FC = () => {
           bordered
         />
       </div>
+      {/* 用户信息弹窗 */}
+      <Modal
+        title="新增用户"
+        open={isModalOpen}
+        onOk={handleSubmit}
+        onCancel={() => setIsModalOpen(false)}
+      >
+        <Form labelCol={{ span: 5 }} wrapperCol={{ span: 19 }}>
+          <Item label="角色名称">
+            <Input
+              placeholder="请输入角色名称"
+              value={roleInfo.roleName}
+              onChange={(e) =>
+                setRoleInfo({ ...roleInfo, roleName: e.target.value })
+              }
+            />
+          </Item>
+          <Item label="角色编码">
+            <Input
+              placeholder="请输入角色编码"
+              value={roleInfo.roleCode}
+              onChange={(e) =>
+                setRoleInfo({ ...roleInfo, roleCode: e.target.value })
+              }
+            />
+          </Item>
+          <Item label="描述">
+            <Input
+              placeholder="请输入角色信息"
+              value={roleInfo.description}
+              onChange={(e) =>
+                setRoleInfo({ ...roleInfo, description: e.target.value })
+              }
+            />
+          </Item>
+        </Form>
+      </Modal>
     </div>
   )
 }
