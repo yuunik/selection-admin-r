@@ -1,2 +1,6 @@
 @import "tailwindcss";
 @import "@/styles/index.css";
+
+@theme {
+    --shadow-default: 0 0 12px rgba(0, 0, 0, 0.12);
+}

@@ -1,0 +1,3 @@
+.common-style {
+    @apply shadow-default rounded-[4px] p-[20px];
+}
