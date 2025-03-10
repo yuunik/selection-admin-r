@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Form, Input, Button, Table, message, Modal } from 'antd'
 import type { TableProps } from 'antd'
 import { RedoOutlined, SearchOutlined } from '@ant-design/icons'
@@ -6,51 +6,10 @@ import { RedoOutlined, SearchOutlined } from '@ant-design/icons'
 import type { SysRoleType, RoleNameType } from '@/types/acl'
 import type { PageParamsType } from '@/types'
 import { pageRoleListApi } from '@/apis/roleApi.tsx'
-import { addRoleApi } from '../../../apis/roleApi.tsx'
+import { addRoleApi } from '@/apis/roleApi.tsx'
+import { deleteRoleApi, editRoleApi } from '../../../apis/roleApi.tsx'
 
 const Item = Form.Item
-
-// 角色列表列配置
-const columns: TableProps<SysRoleType>['columns'] = [
-  {
-    title: '角色id',
-    dataIndex: 'id',
-    key: 'id',
-    align: 'center',
-    width: 100,
-  },
-  {
-    title: '角色名称',
-    dataIndex: 'roleName',
-    key: 'roleName',
-    align: 'center',
-  },
-  {
-    title: '角色编码',
-    dataIndex: 'roleCode',
-    key: 'roleCode',
-    align: 'center',
-  },
-  {
-    title: '描述',
-    dataIndex: 'description',
-    key: 'description',
-    align: 'center',
-  },
-  {
-    title: '操作',
-    key: 'action',
-    render: () => (
-      <>
-        <Button type="link">编辑</Button>
-        <Button type="link" className="ml-4">
-          删除
-        </Button>
-      </>
-    ),
-    align: 'center',
-  },
-]
 
 const Role: React.FC = () => {
   // 角色列表数据
@@ -119,6 +78,36 @@ const Role: React.FC = () => {
 
   // 处理弹窗提交
   const handleSubmit = async () => {
+    if (roleInfo.id) {
+      // 编辑角色
+      handleEditRole(roleInfo)
+    } else {
+      // 新增角色
+      handleAddRole(roleInfo)
+    }
+  }
+
+  // 用户信息
+  const [roleInfo, setRoleInfo] = useState<SysRoleType>({} as SysRoleType)
+
+  // 打开新增用户弹窗
+  const handleOpenAddModal = () => {
+    // 重置用户信息
+    setRoleInfo({} as SysRoleType)
+    // 打开弹窗
+    setIsModalOpen(true)
+  }
+
+  // 打开编辑用户弹窗
+  const handleOpenEditModal = (roleInfo: SysRoleType) => {
+    // 更新用户信息
+    setRoleInfo(roleInfo)
+    // 打开弹窗
+    setIsModalOpen(true)
+  }
+
+  // 新增角色信息
+  const handleAddRole = async (roleInfo: SysRoleType) => {
     // 发送请求
     const {
       data: { code },
@@ -133,16 +122,94 @@ const Role: React.FC = () => {
     }
   }
 
-  // 用户信息
-  const [roleInfo, setRoleInfo] = useState<SysRoleType>({} as SysRoleType)
-
-  // 打开新增用户弹窗
-  const handleOpenAddModal = () => {
-    // 重置用户信息
-    setRoleInfo({} as SysRoleType)
-    // 打开弹窗
-    setIsModalOpen(true)
+  // 编辑角色信息
+  const handleEditRole = async (record: SysRoleType) => {
+    const {
+      data: { code },
+    } = await editRoleApi(record)
+    if (code === 200) {
+      // 关闭弹窗
+      setIsModalOpen(false)
+      // 刷新页面
+      getRoleList()
+      // 提示成功信息
+      message.success('编辑成功')
+    }
   }
+
+  // 删除角色信息
+  const handleDeleteRole = (id: number) => {
+    Modal.confirm({
+      title: '确认删除该角色?',
+      content: '删除后将无法恢复,请谨慎操作!',
+      centered: true,
+      maskClosable: false,
+      onOk: async () => {
+        const {
+          data: { code },
+        } = await deleteRoleApi(id)
+        if (code === 200) {
+          // 刷新页面
+          getRoleList()
+          // 提示成功信息
+          message.success('删除成功')
+        }
+      },
+    })
+  }
+
+  // 角色列表列配置
+  const columns = useMemo<TableProps<SysRoleType>['columns']>(
+    () => [
+      {
+        title: '角色id',
+        dataIndex: 'id',
+        key: 'id',
+        align: 'center',
+        width: 100,
+      },
+      {
+        title: '角色名称',
+        dataIndex: 'roleName',
+        key: 'roleName',
+        align: 'center',
+      },
+      {
+        title: '角色编码',
+        dataIndex: 'roleCode',
+        key: 'roleCode',
+        align: 'center',
+      },
+      {
+        title: '描述',
+        dataIndex: 'description',
+        key: 'description',
+        align: 'center',
+      },
+      {
+        title: '操作',
+        key: 'action',
+        render: (_, record) => (
+          <>
+            <Button type="link" onClick={() => handleOpenEditModal(record)}>
+              编辑
+            </Button>
+            <Button
+              type="link"
+              danger
+              className="ml-4"
+              onClick={() => handleDeleteRole(record.id as number)}
+            >
+              删除
+            </Button>
+          </>
+        ),
+        align: 'center',
+        width: 200,
+      },
+    ],
+    [],
+  )
 
   return (
     <div>
@@ -209,6 +276,8 @@ const Role: React.FC = () => {
         open={isModalOpen}
         onOk={handleSubmit}
         onCancel={() => setIsModalOpen(false)}
+        centered
+        maskClosable={false}
       >
         <Form labelCol={{ span: 5 }} wrapperCol={{ span: 19 }}>
           <Item label="角色名称">
