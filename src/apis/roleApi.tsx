@@ -3,7 +3,7 @@
  */
 import { request } from '@/utils'
 import type { PageType, ResType } from '@/types'
-import type { RoleNameType, SysRoleType } from '@/types/acl'
+import type { RoleQueryType, SysRoleType } from '@/types/acl'
 
 // 请求地址
 enum RoleApi {
@@ -21,7 +21,7 @@ enum RoleApi {
 export const pageRoleListApi = (
   pageNum: number,
   pageSize: number,
-  roleName: RoleNameType,
+  roleName: RoleQueryType,
 ) =>
   request<ResType<PageType<SysRoleType[]>>>({
     url: RoleApi.PAGE_URL + `/${pageNum}/${pageSize}`,

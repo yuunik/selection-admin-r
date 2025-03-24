@@ -20,7 +20,17 @@ export type SysRoleType = {
   description: string
 }
 
-// 用户角色名称类型
-export type RoleNameType = {
+// 用户角色分页查询数据类型
+export type RoleQueryType = {
   roleName: string
+}
+
+// 用户分页查询数据类型
+export type UserQueryType = {
+  /* 搜索关键字 */
+  keyword: string
+  /* 开始时间 */
+  createTimeBegin: string
+  /* 结束时间 */
+  createTimeEnd: string
 }

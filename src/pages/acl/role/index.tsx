@@ -3,12 +3,12 @@ import { Form, Input, Button, Table, message, Modal } from 'antd'
 import type { TableProps } from 'antd'
 import { RedoOutlined, SearchOutlined } from '@ant-design/icons'
 
-import type { SysRoleType, RoleNameType } from '@/types/acl'
+import type { SysRoleType, RoleQueryType } from '@/types/acl'
 import type { PageParamsType } from '@/types'
 import { pageRoleListApi } from '@/apis/roleApi.tsx'
-import { addRoleApi } from '@/apis/roleApi.tsx'
-import { deleteRoleApi, editRoleApi } from '../../../apis/roleApi.tsx'
+import { addRoleApi, deleteRoleApi, editRoleApi } from '@/apis/roleApi.tsx'
 
+// 菜单子项
 const Item = Form.Item
 
 const Role: React.FC = () => {
@@ -22,7 +22,7 @@ const Role: React.FC = () => {
   })
 
   // 用户角色搜索条件
-  const [role, setRole] = useState<RoleNameType>({
+  const [role, setRole] = useState<RoleQueryType>({
     roleName: '',
   })
 
@@ -270,9 +270,9 @@ const Role: React.FC = () => {
           bordered
         />
       </div>
-      {/* 用户信息弹窗 */}
+      {/* 用户角色信息弹窗 */}
       <Modal
-        title="新增用户"
+        title={roleInfo.id ? '编辑角色' : '新增角色'}
         open={isModalOpen}
         onOk={handleSubmit}
         onCancel={() => setIsModalOpen(false)}

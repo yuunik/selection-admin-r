@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { FormProps, Image, message } from 'antd'
 import { Form, Input, Button, Divider } from 'antd'
 import { useDispatch } from 'react-redux'
@@ -20,7 +20,9 @@ import './index.scss'
 import Left from '@/assets/login_left.png'
 import Logo from '@/assets/logo.png'
 
+// 导入 FormItem 类型
 const Item = Form.Item
+// 导入 Password 类型
 const Password = Input.Password
 
 const Login: React.FC = () => {
@@ -93,8 +95,10 @@ const Login: React.FC = () => {
     }, 1000)
   }
 
+  // 获取 search 参数
   const [search] = useSearchParams()
-  const hadRedirect = search.get('redirect')
+  // 获取 redirect 参数
+  const hadRedirect = useMemo(() => search.get('redirect'), [])
   // 用户登录
   const handleLogin: FormProps<LoginFormProps>['onFinish'] = async (values) => {
     try {
@@ -159,9 +163,13 @@ const Login: React.FC = () => {
   }, [location.pathname])
 
   return (
+    /* 登录页背景 */
     <div className="bg">
+      {/* 登录页容器 */}
       <div className="login-container">
+        {/* 登录页欢迎语图片 */}
         <img src={Left} alt="login-login" className="login-img" />
+        {/* 登录页表单 */}
         <div className="form-container">
           <div className="login-form">
             <strong className="form-title">
