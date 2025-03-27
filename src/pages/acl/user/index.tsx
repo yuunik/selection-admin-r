@@ -1,8 +1,23 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Button, DatePicker, Form, Input, message, Modal, Table } from 'antd'
-import type { TableProps } from 'antd'
-import { RedoOutlined, SearchOutlined } from '@ant-design/icons'
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  message,
+  Modal,
+  Table,
+  Upload,
+} from 'antd'
+import type { TableProps, GetProp, UploadProps } from 'antd'
+import {
+  LoadingOutlined,
+  PlusOutlined,
+  RedoOutlined,
+  SearchOutlined,
+} from '@ant-design/icons'
 import dayjs from 'dayjs'
+import Cookies from 'js-cookie'
 
 import type { UserInfoType } from '@/types/login'
 import type { PageParamsType } from '@/types'
@@ -15,6 +30,8 @@ const { Item } = Form
 // 时间范围选择器
 const { RangePicker } = DatePicker
 const { TextArea, Password } = Input
+// 文件类型
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0]
 
 const User: React.FC = () => {
   // 用户列表
@@ -99,6 +116,12 @@ const User: React.FC = () => {
   const [userFormData, setUserFormData] = useState<UserInfoType>(
     {} as UserInfoType,
   )
+
+  // 上传文件的加载状态
+  const [isUploading, setIsUploading] = useState<boolean>(false)
+
+  // 头像地址
+  const [avatar, setAvatar] = useState<string>('')
 
   // 获取用户列表
   const getUserList = async (pageNum = 1, searchParam = searchParams) => {
@@ -194,7 +217,7 @@ const User: React.FC = () => {
   const handleAddUser = async () => {
     const {
       data: { code },
-    } = await addUserApi(userFormData)
+    } = await addUserApi({ ...userFormData, avatar: avatar })
     if (code === 200) {
       // 新增成功
       message.success('新增成功')
@@ -217,7 +240,7 @@ const User: React.FC = () => {
   const handleEditUser = async () => {
     const {
       data: { code },
-    } = await editUserApi(userFormData)
+    } = await editUserApi({ ...userFormData, password: '' })
     if (code === 200) {
       // 编辑成功
       message.success('编辑成功')
@@ -248,6 +271,41 @@ const User: React.FC = () => {
       maskClosable: false,
     })
   }
+
+  // 上传
+  const beforeUpload = (file: FileType) => {
+    // 限制文件类型
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
+    if (!isJpgOrPng) {
+      message.error('只能上传jpg或png格式的图片文件')
+    }
+    // 限制文件大小
+    const isLt2M = file.size / 1024 / 1024 < 2
+    if (!isLt2M) {
+      message.error('图片文件大小不能超过2MB')
+    }
+    return isJpgOrPng && isLt2M
+  }
+
+  const handleChange: UploadProps['onChange'] = (info) => {
+    if (info.file.status === 'uploading') {
+      // 上传中
+      return setIsUploading(true)
+    }
+    if (info.file.status === 'done') {
+      // 上传完成
+      setIsUploading(false)
+      // 头像地址
+      setAvatar(info.file.response.data)
+    }
+  }
+
+  const uploadButton = (
+    <button style={{ border: 0, background: 'none' }} type="button">
+      {isUploading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </button>
+  )
 
   return (
     <div>
@@ -363,6 +421,26 @@ const User: React.FC = () => {
                 setUserFormData({ ...userFormData, phone: e.target.value })
               }
             />
+          </Item>
+          <Item label="头像">
+            <Upload
+              name="file"
+              listType="picture-card"
+              className="avatar-uploader"
+              showUploadList={false}
+              action="http://localhost:8501/admin/system/file/upload"
+              beforeUpload={beforeUpload}
+              onChange={handleChange}
+              headers={{
+                Authorization: `Bearer ${Cookies.get('token')}`,
+              }}
+            >
+              {avatar ? (
+                <img src={avatar} alt="avatar" style={{ width: '100%' }} />
+              ) : (
+                uploadButton
+              )}
+            </Upload>
           </Item>
           <Item label="简介">
             <TextArea
