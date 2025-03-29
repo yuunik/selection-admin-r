@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import {
   Button,
   Checkbox,
-  CheckboxProps,
   DatePicker,
   Divider,
   Form,
@@ -12,7 +11,7 @@ import {
   Table,
   Upload,
 } from 'antd'
-import type { TableProps, GetProp, UploadProps } from 'antd'
+import type { TableProps, GetProp, UploadProps, CheckboxProps } from 'antd'
 import {
   LoadingOutlined,
   PlusOutlined,
