@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import {
   Button,
+  Checkbox,
+  CheckboxProps,
   DatePicker,
+  Divider,
   Form,
   Input,
   message,
@@ -21,15 +24,18 @@ import Cookies from 'js-cookie'
 
 import type { UserInfoType } from '@/types/login'
 import type { PageParamsType } from '@/types'
-import type { UserQueryType } from '@/types/acl'
+import type { UserQueryType, SysRoleType } from '@/types/acl'
 import { pageUserListApi } from '@/apis/userApi.tsx'
 import { addUserApi, deleteUserApi, editUserApi } from '@/apis/userApi.tsx'
+import { getUserRoleListApi } from '@/apis/roleApi.tsx'
+import { assignUserRoleApi } from '../../../apis/userApi.tsx'
 
 // 表单项
 const { Item } = Form
 // 时间范围选择器
 const { RangePicker } = DatePicker
 const { TextArea, Password } = Input
+const CheckboxGroup = Checkbox.Group
 // 文件类型
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0]
 
@@ -76,6 +82,13 @@ const User: React.FC = () => {
         key: 'action',
         render: (_, record) => (
           <>
+            <Button
+              type="link"
+              style={{ color: '#497d00' }}
+              onClick={() => openAssignRoleModal(record)}
+            >
+              分配角色
+            </Button>
             <Button type="link" onClick={() => openEditModal(record)}>
               编辑
             </Button>
@@ -90,7 +103,7 @@ const User: React.FC = () => {
           </>
         ),
         align: 'center',
-        width: 200,
+        width: 300,
       },
     ],
     [],
@@ -122,6 +135,46 @@ const User: React.FC = () => {
 
   // 头像地址
   const [avatar, setAvatar] = useState<string>('')
+
+  // 分配角色弹窗显隐
+  const [visibleAssignRole, setVisibleAssignRole] = useState(false)
+
+  // 角色信息列表
+  const [roleList, setRoleList] = useState<SysRoleType[]>([])
+
+  // 用户所具有的角色id列表
+  const [userRoleIdList, setUserRoleIdList] = useState<number[]>([])
+
+  // 角色选项列表
+  const roleOptions = useMemo(
+    () =>
+      roleList.map((role) => ({
+        label: role.roleName,
+        value: role.id as number,
+      })),
+    [roleList],
+  )
+
+  // 全选
+  const checkAll = useMemo(
+    () => userRoleIdList.length === roleOptions.length,
+    [userRoleIdList, roleOptions],
+  )
+
+  // 信息弹窗显隐
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  // 全选的样式控制
+  const indeterminate = useMemo(
+    () =>
+      userRoleIdList.length > 0 && userRoleIdList.length < roleOptions.length,
+    [userRoleIdList, roleOptions],
+  )
+
+  // 所需分配角色的用户信息
+  const [assignRoleUser, setAssignRoleUser] = useState<UserInfoType>(
+    {} as UserInfoType,
+  )
 
   // 获取用户列表
   const getUserList = async (pageNum = 1, searchParam = searchParams) => {
@@ -186,9 +239,6 @@ const User: React.FC = () => {
     setSearchParams(resetParams)
   }
 
-  // 信息弹窗显隐
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
   // 新增用户或编辑用户的表单提交
   const handleSubmit = () => {
     if (userFormData.id) {
@@ -209,6 +259,8 @@ const User: React.FC = () => {
       phone: '',
       description: '',
     } as UserInfoType)
+    // 清空头像
+    setAvatar('')
     // 打开弹窗
     setIsModalOpen(true)
   }
@@ -306,6 +358,62 @@ const User: React.FC = () => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   )
+
+  // 分配角色
+  const handleAssignRole = async () => {
+    const {
+      data: { code },
+    } = await assignUserRoleApi({
+      userId: assignRoleUser.id,
+      roleIdList: userRoleIdList,
+    })
+    if (code === 200) {
+      // 分配角色成功
+      message.success('分配角色成功')
+      // 关闭弹窗
+      setVisibleAssignRole(false)
+      // 刷新用户列表
+      getUserList()
+    }
+  }
+
+  // 打开分配角色弹窗
+  const openAssignRoleModal = (user: UserInfoType) => {
+    // 回显用户信息
+    setAssignRoleUser(user)
+    // 查询所有角色及用户所拥有的角色信息
+    getUserRoleList(user.id)
+    // 打开弹窗
+    setVisibleAssignRole(true)
+  }
+
+  // 用户角色信息变化
+  const handleUserRoleChange = (sysRoleIds: number[]) => {
+    setUserRoleIdList(sysRoleIds)
+  }
+
+  // 查询所有角色及用户所拥有的角色信息
+  const getUserRoleList = async (userId: number) => {
+    const {
+      data: {
+        code,
+        data: { sysRoleList, userRoleIdList: userRoleIds },
+      },
+    } = await getUserRoleListApi(userId)
+    if (code === 200) {
+      // 设置角色列表
+      setRoleList(sysRoleList)
+      // 设置用户角色id列表
+      setUserRoleIdList(userRoleIds)
+    }
+  }
+
+  // 全选
+  const handleCheckAll: CheckboxProps['onChange'] = (e) => {
+    setUserRoleIdList(
+      e.target.checked ? roleOptions.map((item) => item.value) : [],
+    )
+  }
 
   return (
     <div>
@@ -453,6 +561,37 @@ const User: React.FC = () => {
                 })
               }
             />
+          </Item>
+        </Form>
+      </Modal>
+      {/* 分配角色弹窗 */}
+      <Modal
+        title="分配角色"
+        open={visibleAssignRole}
+        onOk={handleAssignRole}
+        onCancel={() => setVisibleAssignRole(false)}
+        centered
+        maskClosable={false}
+      >
+        <Form labelCol={{ span: 5 }} wrapperCol={{ span: 19 }}>
+          <Item label="用户名">
+            <Input value={assignRoleUser.userName} disabled />
+          </Item>
+          <Item label="角色">
+            <CheckboxGroup
+              options={roleOptions}
+              value={userRoleIdList}
+              onChange={(sysRoleId) => handleUserRoleChange(sysRoleId)}
+              defaultValue={userRoleIdList}
+            />
+            <Divider />
+            <Checkbox
+              checked={checkAll}
+              onChange={handleCheckAll}
+              indeterminate={indeterminate}
+            >
+              全选
+            </Checkbox>
           </Item>
         </Form>
       </Modal>

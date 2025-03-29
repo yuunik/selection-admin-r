@@ -4,6 +4,7 @@
 import { request } from '@/utils'
 import type { PageType, ResType } from '@/types'
 import type { RoleQueryType, SysRoleType } from '@/types/acl'
+import { UserRoleInfoType } from '../types/acl'
 
 // 请求地址
 enum RoleApi {
@@ -15,6 +16,8 @@ enum RoleApi {
   EDIT_URL = '/admin/system/role/updateRole',
   // 删除角色
   DELETE_URL = '/admin/system/role/deleteRole',
+  // 查询所有角色及用户所拥有的角色信息
+  GET_USER_ROLE_LIST = '/admin/system/role/getUserRoleList',
 }
 
 // 分页查询用户角色信息
@@ -50,4 +53,11 @@ export const deleteRoleApi = (id: number) =>
   request<ResType<void>>({
     url: RoleApi.DELETE_URL + `/${id}`,
     method: 'DELETE',
+  })
+
+// 查询所有角色及用户所拥有的角色信息
+export const getUserRoleListApi = (userId: number) =>
+  request<ResType<UserRoleInfoType>>({
+    url: RoleApi.GET_USER_ROLE_LIST + `/${userId}`,
+    method: 'GET',
   })

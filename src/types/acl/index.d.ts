@@ -1,6 +1,7 @@
 /**
  * ACL types
  */
+import type { UserInfoType } from '@/types/login'
 
 // 用户角色类型
 export type SysRoleType = {
@@ -33,4 +34,20 @@ export type UserQueryType = {
   createTimeBegin: string
   /* 结束时间 */
   createTimeEnd: string
+}
+
+// 查询用户角色接口的数据类型
+export type UserRoleInfoType = {
+  /* 所有角色列表 */
+  sysRoleList: SysRoleType[]
+  /* 用户角色id列表 */
+  userRoleIdList: number[]
+}
+
+// 分配用户角色的数据类型
+export type AssignUserRoleType = {
+  /* 用户id */
+  userId: number
+  /* 所分配角色id列表 */
+  roleIdList: number[]
 }

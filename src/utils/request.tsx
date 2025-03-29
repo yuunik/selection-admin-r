@@ -27,6 +27,16 @@ request.interceptors.request.use(
 // 响应拦截器
 request.interceptors.response.use(
   (response) => {
+    // 若请求失败，则提示错误信息
+    const {
+      data: { code, message: errMsg },
+    } = response
+    if (code === 205) {
+      message.error('token过期, 请重新登录')
+    } else if (code !== 200) {
+      console.log('请求失败, 错误信息:' + errMsg)
+      message.error('网络异常, 请稍后再试...')
+    }
     // 对响应数据做点什么
     return response
   },
