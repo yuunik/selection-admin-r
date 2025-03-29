@@ -1,7 +1,6 @@
 /**
  * ACL types
  */
-import type { UserInfoType } from '@/types/login'
 
 // 用户角色类型
 export type SysRoleType = {
