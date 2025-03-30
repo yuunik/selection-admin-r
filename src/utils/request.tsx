@@ -31,11 +31,10 @@ request.interceptors.response.use(
     const {
       data: { code, message: errMsg },
     } = response
-    if (code === 205) {
-      message.error('token过期, 请重新登录')
-    } else if (code !== 200) {
-      console.log('请求失败, 错误信息:' + errMsg)
-      message.error('网络异常, 请稍后再试...')
+    // 若不是 200 状态码，则提示错误信息
+    if (code !== 200 && code !== 208) {
+      // 错误提示
+      message.error(errMsg)
     }
     // 对响应数据做点什么
     return response
