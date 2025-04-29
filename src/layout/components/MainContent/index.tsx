@@ -36,6 +36,7 @@ const MainContent = () => {
       classNames="fade"
       unmountOnExit
       appear
+      className="h-full"
     >
       <div ref={nodeRef}>
         <Outlet />

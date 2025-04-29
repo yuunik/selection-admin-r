@@ -27,7 +27,7 @@ import type { UserQueryType, SysRoleType } from '@/types/acl'
 import { pageUserListApi } from '@/apis/userApi.tsx'
 import { addUserApi, deleteUserApi, editUserApi } from '@/apis/userApi.tsx'
 import { getUserRoleListApi } from '@/apis/roleApi.tsx'
-import { assignUserRoleApi } from '../../../apis/userApi.tsx'
+import { assignUserRoleApi } from '@/apis/userApi.tsx'
 
 // 表单项
 const { Item } = Form

@@ -50,3 +50,27 @@ export type AssignUserRoleType = {
   /* 所分配角色id列表 */
   roleIdList: number[]
 }
+
+// 菜单类型
+export type PermissionType = {
+  /* 菜单id */
+  id: number
+  // 菜单创建时间
+  createTime?: string
+  // 菜单更新时间
+  updateTime?: string
+  // 是否删除
+  isDeleted?: number
+  /* 父菜单id */
+  parentId: number
+  /* 菜单名称 */
+  title: string
+  /* 路由名称 */
+  component: string
+  /* 排序值 */
+  sortValue: number
+  /* 菜单状态 */
+  status: number
+  /* 子菜单 */
+  children: PermissionType[]
+}
