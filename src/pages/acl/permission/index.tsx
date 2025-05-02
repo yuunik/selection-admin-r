@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Table, TableProps } from 'antd'
-import type { PermissionType } from '@/types/acl'
+import {
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Radio,
+  Table,
+  TableProps,
+} from 'antd'
 import { getAllPermissionApi } from '@/apis/permissionApi.tsx'
+import type { PermissionType } from '@/types/acl'
 
 const permissionColumns: TableProps<PermissionType>['columns'] = [
   {
@@ -51,9 +60,18 @@ const permissionColumns: TableProps<PermissionType>['columns'] = [
   },
 ]
 
+const { Item } = Form
+const RadioGroup = Radio.Group
+
 const Permission: React.FC = () => {
   // 权限列表
-  const [permissionList, setPermissionList] = useState<PermissionType[]>()
+  const [permissionList, setPermissionList] = useState<PermissionType[]>([])
+  // 菜单模态框的状态
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  // 菜单表单数据
+  const [permissionFormData, setPermissionFormData] = useState<PermissionType>(
+    {} as PermissionType,
+  )
 
   // 获取权限列表
   const getPermissionList = async () => {
@@ -67,13 +85,29 @@ const Permission: React.FC = () => {
 
   // 组件挂载时获取权限列表
   useEffect(() => {
-    getPermissionList()
+    getPermissionList().then()
   }, [])
+
+  // 表单提交
+  const handleSubmit = () => {
+    setIsModalOpen(false)
+  }
+
+  const handleCancel = () => {
+    setIsModalOpen(false)
+  }
+
+  // 新增权限
+  const openAddModal = () => {
+    setIsModalOpen(true)
+  }
 
   return (
     <div className="h-full">
       <div className="shadow-default rounded-[4px] p-[20px]">
-        <Button type="primary">新增权限</Button>
+        <Button type="primary" onClick={openAddModal}>
+          新增权限
+        </Button>
       </div>
       <Table
         dataSource={permissionList}
@@ -86,6 +120,69 @@ const Permission: React.FC = () => {
           y: 700,
         }}
       />
+      {/* permission modal */}
+      <Modal
+        title="新增菜单"
+        open={isModalOpen}
+        onOk={handleSubmit}
+        onCancel={handleCancel}
+        centered
+      >
+        <Form labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+          <Item label="菜单标题">
+            <Input
+              value={permissionFormData?.title}
+              placeholder="请输入菜单标题"
+              onInput={(e) =>
+                setPermissionFormData({
+                  ...permissionFormData,
+                  title: e.currentTarget.value,
+                })
+              }
+            />
+          </Item>
+          <Item label="路由名称">
+            <Input
+              placeholder="请输入路由名称"
+              value={permissionFormData?.component}
+              onInput={(e) =>
+                setPermissionFormData({
+                  ...permissionFormData,
+                  component: e.currentTarget.value,
+                })
+              }
+            />
+          </Item>
+          <Item label="排序">
+            <InputNumber
+              min={1}
+              defaultValue={permissionFormData?.sortValue}
+              value={permissionFormData?.sortValue}
+              onChange={(val) =>
+                setPermissionFormData({
+                  ...permissionFormData,
+                  sortValue: val as number,
+                })
+              }
+            />
+          </Item>
+          <Item label="状态">
+            <RadioGroup
+              value={permissionFormData?.status}
+              options={[
+                { value: 1, label: '正常' },
+                { value: 0, label: '停用' },
+              ]}
+              onChange={(e) =>
+                setPermissionFormData({
+                  ...permissionFormData,
+                  status: e.target.value,
+                })
+              }
+            />
+          </Item>
+        </Form>
+      </Modal>
     </div>
   )
 }
