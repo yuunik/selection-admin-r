@@ -4,6 +4,7 @@ import {
   Form,
   Input,
   InputNumber,
+  message,
   Modal,
   Radio,
   Table,
@@ -11,6 +12,7 @@ import {
 } from 'antd'
 import { getAllPermissionApi } from '@/apis/permissionApi.tsx'
 import type { PermissionType } from '@/types/acl'
+import { addPermissionApi } from '@/apis/permissionApi.tsx'
 
 const permissionColumns: TableProps<PermissionType>['columns'] = [
   {
@@ -61,7 +63,7 @@ const permissionColumns: TableProps<PermissionType>['columns'] = [
 ]
 
 const { Item } = Form
-const RadioGroup = Radio.Group
+const { Group: RadioGroup } = Radio
 
 const Permission: React.FC = () => {
   // 权限列表
@@ -88,9 +90,25 @@ const Permission: React.FC = () => {
     getPermissionList().then()
   }, [])
 
+  // add permission
+  const addPermission = async (permission: PermissionType) => {
+    const {
+      data: { code },
+    } = await addPermissionApi({ ...permission, parentId: 0 })
+    if (code === 200) {
+      // notification
+      message.success('新增权限成功')
+      // 关闭模态框
+      setIsModalOpen(false)
+      // 刷新权限列表
+      getPermissionList().then()
+    }
+  }
+
   // 表单提交
   const handleSubmit = () => {
-    setIsModalOpen(false)
+    /*setIsModalOpen(false)*/
+    addPermission(permissionFormData).then()
   }
 
   const handleCancel = () => {
