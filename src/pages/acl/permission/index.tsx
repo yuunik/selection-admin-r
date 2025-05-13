@@ -12,8 +12,7 @@ import {
 } from 'antd'
 import { getAllPermissionApi } from '@/apis/permissionApi.tsx'
 import type { PermissionType } from '@/types/acl'
-import { addPermissionApi } from '@/apis/permissionApi.tsx'
-import { updatePermissionApi } from '../../../apis/permissionApi.tsx'
+import { addPermissionApi, updatePermissionApi } from '@/apis/permissionApi.tsx'
 
 const { Item } = Form
 const { Group: RadioGroup } = Radio
@@ -69,7 +68,11 @@ const Permission: React.FC = () => {
         minWidth: 300,
         render: (_, record) => (
           <>
-            <Button type="link" style={{ color: 'var(--color-add)' }}>
+            <Button
+              type="link"
+              style={{ color: 'var(--color-add)' }}
+              onClick={() => openAddChildModal(record.id)}
+            >
               新增子菜单
             </Button>
             <Button
@@ -92,6 +95,14 @@ const Permission: React.FC = () => {
     return permissionFormData.id !== undefined
   }, [permissionFormData])
 
+  const isAddRootMode = useMemo(() => {
+    return !isEditMode && !permissionFormData.parentId
+  }, [isEditMode, permissionFormData])
+
+  const modalTitle = useMemo(() => {
+    return isEditMode ? '编辑菜单' : isAddRootMode ? '新增菜单' : '新增子菜单'
+  }, [isEditMode, isAddRootMode])
+
   // 获取权限列表
   const getPermissionList = async () => {
     const {
@@ -111,7 +122,7 @@ const Permission: React.FC = () => {
   const addPermission = async () => {
     const {
       data: { code },
-    } = await addPermissionApi({ ...permissionFormData, parentId: 0 })
+    } = await addPermissionApi(permissionFormData)
     if (code === 200) {
       // notification
       message.success('新增权限成功')
@@ -129,10 +140,8 @@ const Permission: React.FC = () => {
     if (isEditMode) {
       // update permission
       editPermission().then()
-    } else if (permissionFormData.parentId) {
-      // add child permission
     } else {
-      // add root permission
+      // add permission
       /*setIsModalOpen(false)*/
       addPermission().then()
     }
@@ -145,6 +154,7 @@ const Permission: React.FC = () => {
 
   // open modal
   const openAddModal = () => {
+    setPermissionFormData({ parentId: 0 } as PermissionType)
     setIsModalOpen(true)
   }
 
@@ -173,6 +183,14 @@ const Permission: React.FC = () => {
     }
   }
 
+  // open add child permission
+  const openAddChildModal = (parentId: number) => {
+    // set parent id
+    setPermissionFormData({ parentId } as PermissionType)
+    // open modal
+    setIsModalOpen(true)
+  }
+
   return (
     <div className="h-full">
       <div className="shadow-default rounded-[4px] p-[20px]">
@@ -193,7 +211,7 @@ const Permission: React.FC = () => {
       />
       {/* permission modal */}
       <Modal
-        title="新增菜单"
+        title={modalTitle}
         open={isModalOpen}
         onOk={handleSubmit}
         onCancel={handleCancel}
