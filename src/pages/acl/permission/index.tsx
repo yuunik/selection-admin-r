@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   Button,
   Form,
@@ -13,54 +13,7 @@ import {
 import { getAllPermissionApi } from '@/apis/permissionApi.tsx'
 import type { PermissionType } from '@/types/acl'
 import { addPermissionApi } from '@/apis/permissionApi.tsx'
-
-const permissionColumns: TableProps<PermissionType>['columns'] = [
-  {
-    title: '菜单标题',
-    dataIndex: 'title',
-    key: 'title',
-    align: 'center',
-  },
-  {
-    title: '路由名称',
-    dataIndex: 'component',
-    key: 'component',
-    align: 'center',
-  },
-  {
-    title: '排序',
-    dataIndex: 'sortValue',
-    key: 'sortValue',
-    align: 'center',
-    sorter: (a, b) => a.sortValue - b.sortValue,
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    key: 'status',
-    align: 'center',
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'createTime',
-    key: 'createTime',
-    align: 'center',
-  },
-  {
-    title: '操作',
-    align: 'center',
-    key: 'action',
-    width: 250,
-    render: () => (
-      <>
-        <Button type="link">编辑</Button>
-        <Button type="link" danger>
-          删除
-        </Button>
-      </>
-    ),
-  },
-]
+import { updatePermissionApi } from '../../../apis/permissionApi.tsx'
 
 const { Item } = Form
 const { Group: RadioGroup } = Radio
@@ -74,6 +27,70 @@ const Permission: React.FC = () => {
   const [permissionFormData, setPermissionFormData] = useState<PermissionType>(
     {} as PermissionType,
   )
+
+  const permissionColumns = useMemo<TableProps<PermissionType>['columns']>(
+    () => [
+      {
+        title: '菜单标题',
+        dataIndex: 'title',
+        key: 'title',
+        align: 'center',
+      },
+      {
+        title: '路由名称',
+        dataIndex: 'component',
+        key: 'component',
+        align: 'center',
+      },
+      {
+        title: '排序',
+        dataIndex: 'sortValue',
+        key: 'sortValue',
+        align: 'center',
+        sorter: (a, b) => a.sortValue - b.sortValue,
+      },
+      {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        align: 'center',
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        align: 'center',
+      },
+      {
+        title: '操作',
+        align: 'center',
+        key: 'action',
+        width: 300,
+        minWidth: 300,
+        render: (_, record) => (
+          <>
+            <Button type="link" style={{ color: 'var(--color-add)' }}>
+              新增子菜单
+            </Button>
+            <Button
+              type="link"
+              onClick={() => openUpdatePermissionModal(record)}
+            >
+              编辑
+            </Button>
+            <Button type="link" danger>
+              删除
+            </Button>
+          </>
+        ),
+      },
+    ],
+    [],
+  )
+
+  const isEditMode = useMemo(() => {
+    return permissionFormData.id !== undefined
+  }, [permissionFormData])
 
   // 获取权限列表
   const getPermissionList = async () => {
@@ -91,13 +108,15 @@ const Permission: React.FC = () => {
   }, [])
 
   // add permission
-  const addPermission = async (permission: PermissionType) => {
+  const addPermission = async () => {
     const {
       data: { code },
-    } = await addPermissionApi({ ...permission, parentId: 0 })
+    } = await addPermissionApi({ ...permissionFormData, parentId: 0 })
     if (code === 200) {
       // notification
       message.success('新增权限成功')
+      // reset form data
+      setPermissionFormData({} as PermissionType)
       // 关闭模态框
       setIsModalOpen(false)
       // 刷新权限列表
@@ -107,17 +126,51 @@ const Permission: React.FC = () => {
 
   // 表单提交
   const handleSubmit = () => {
-    /*setIsModalOpen(false)*/
-    addPermission(permissionFormData).then()
+    if (isEditMode) {
+      // update permission
+      editPermission().then()
+    } else if (permissionFormData.parentId) {
+      // add child permission
+    } else {
+      // add root permission
+      /*setIsModalOpen(false)*/
+      addPermission().then()
+    }
   }
 
+  // close modal
   const handleCancel = () => {
     setIsModalOpen(false)
   }
 
-  // 新增权限
+  // open modal
   const openAddModal = () => {
     setIsModalOpen(true)
+  }
+
+  // open update modal
+  const openUpdatePermissionModal = (menu: PermissionType) => {
+    // callback permission data
+    setPermissionFormData(menu)
+    // open modal
+    setIsModalOpen(true)
+  }
+
+  // update permission
+  const editPermission = async () => {
+    const {
+      data: { code },
+    } = await updatePermissionApi(permissionFormData)
+    if (code === 200) {
+      // message
+      message.success('更新权限成功')
+      // reset form data
+      setPermissionFormData({} as PermissionType)
+      // close modal
+      setIsModalOpen(false)
+      // refresh permission list
+      getPermissionList().then()
+    }
   }
 
   return (

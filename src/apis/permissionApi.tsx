@@ -27,7 +27,7 @@ export const addPermissionApi = (sysMenu: PermissionType) =>
   })
 
 // update permission
-export const updatePermissionApi = () => (sysMenu: PermissionType) =>
+export const updatePermissionApi = (sysMenu: PermissionType) =>
   request<ResType<object>>({
     url: `${PermissionApi.UPDATE_PERMISSION_URL}`,
     method: 'PUT',
@@ -35,7 +35,7 @@ export const updatePermissionApi = () => (sysMenu: PermissionType) =>
   })
 
 // delete permission
-export const deletePermissionApi = () => (id: number) =>
+export const deletePermissionApi = (id: number) =>
   request<ResType<object>>({
     url: `${PermissionApi.DELETE_PERMISSION_URL}/${id}`,
     method: 'DELETE',
