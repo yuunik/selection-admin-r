@@ -6,6 +6,7 @@ import {
   InputNumber,
   message,
   Modal,
+  Popconfirm,
   Radio,
   Table,
   TableProps,
@@ -13,6 +14,7 @@ import {
 import { getAllPermissionApi } from '@/apis/permissionApi.tsx'
 import type { PermissionType } from '@/types/acl'
 import { addPermissionApi, updatePermissionApi } from '@/apis/permissionApi.tsx'
+import { deletePermissionApi } from '../../../apis/permissionApi.tsx'
 
 const { Item } = Form
 const { Group: RadioGroup } = Radio
@@ -81,9 +83,17 @@ const Permission: React.FC = () => {
             >
               编辑
             </Button>
-            <Button type="link" danger>
-              删除
-            </Button>
+            <Popconfirm
+              title="确认删除?"
+              description="删除后将无法恢复!"
+              onConfirm={() => handleDeletePermission(record.id)}
+              okText="确认"
+              cancelText="取消"
+            >
+              <Button type="link" danger>
+                删除
+              </Button>
+            </Popconfirm>
           </>
         ),
       },
@@ -189,6 +199,19 @@ const Permission: React.FC = () => {
     setPermissionFormData({ parentId } as PermissionType)
     // open modal
     setIsModalOpen(true)
+  }
+
+  // confirm delete permission
+  const handleDeletePermission = async (permissionId: number) => {
+    const {
+      data: { code },
+    } = await deletePermissionApi(permissionId)
+    if (code === 200) {
+      // message
+      message.success('删除权限成功')
+      // refresh permission list
+      getPermissionList().then()
+    }
   }
 
   return (
