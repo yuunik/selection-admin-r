@@ -81,7 +81,7 @@ const fetchUserInfo = () => {
     } = await getUserInfoApi()
     if (code === 200) {
       // 触发 saveUserInfo action
-      dispatch(saveUserInfo(data))
+      dispatch(saveUserInfo(data.userInfo))
       return 'ok'
     } else {
       return Promise.reject(new Error(errorMessage))

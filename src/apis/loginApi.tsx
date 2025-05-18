@@ -1,7 +1,11 @@
 import { request } from '@/utils'
 import type { ResType } from '@/types'
-import type { LoginReqType, LoginResType } from '@/types/login'
-import { CaptchaType, UserInfoType } from '../types/login'
+import type {
+  LoginReqType,
+  LoginResType,
+  CaptchaType,
+  LoginDataResType,
+} from '@/types/login'
 
 // 请求登录接口枚举
 enum LoginAPI {
@@ -28,7 +32,7 @@ export const generateCaptchaApi = () =>
 
 // 获取用户信息
 export const getUserInfoApi = () =>
-  request<ResType<UserInfoType>>({
+  request<ResType<LoginDataResType>>({
     url: LoginAPI.GET_USER_INFO,
     method: 'GET',
   })

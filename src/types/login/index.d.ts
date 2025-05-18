@@ -45,3 +45,15 @@ export type UserInfoType = {
   /* 用户状态 */
   status: number
 }
+
+// 登录接口所返回的数据类型
+export type LoginDataResType = {
+  /* 用户信息 */
+  userInfo: UserInfoType
+  /* 按钮权限列表 */
+  buttonList: string[]
+  /* 角色列表 */
+  roleList: string[]
+  /* 路由列表 */
+  routeList: string[]
+}

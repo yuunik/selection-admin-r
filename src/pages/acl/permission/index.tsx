@@ -13,8 +13,11 @@ import {
 } from 'antd'
 import { getAllPermissionApi } from '@/apis/permissionApi.tsx'
 import type { PermissionType } from '@/types/acl'
-import { addPermissionApi, updatePermissionApi } from '@/apis/permissionApi.tsx'
-import { deletePermissionApi } from '../../../apis/permissionApi.tsx'
+import {
+  addPermissionApi,
+  updatePermissionApi,
+  deletePermissionApi,
+} from '@/apis/permissionApi.tsx'
 
 const { Item } = Form
 const { Group: RadioGroup } = Radio
@@ -226,7 +229,7 @@ const Permission: React.FC = () => {
         columns={permissionColumns}
         className="shadow-default mt-[20px] rounded-[4px]"
         bordered
-        rowKey="id"
+        rowKey={(record) => record.id}
         scroll={{
           scrollToFirstRowOnChange: true,
           y: 700,

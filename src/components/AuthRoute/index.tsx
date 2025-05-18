@@ -82,7 +82,7 @@ const AuthRoute: React.FC<AuthRouteProps> = ({ component }) => {
         // token 失效, 跳转登录页面
         message.error((error as Error).message)
         // 清空用户信息
-        dispatch(fetchUserInfo())
+        dispatch(fetchLogout())
         navigate(`/login?redirect=${location.pathname}`)
       } finally {
         //setIsChecking(false)
