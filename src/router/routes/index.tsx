@@ -12,7 +12,9 @@ import {
   TrademarkOutlined,
   UnorderedListOutlined,
   UserOutlined,
+  AppstoreOutlined,
 } from '@ant-design/icons'
+import { Spin } from 'antd'
 
 import type { RouteType } from '@/types'
 import AuthRoute from '@/components/AuthRoute'
@@ -28,6 +30,7 @@ const Trademark = lazy(() => import('@/pages/prod/trademark'))
 const Attr = lazy(() => import('@/pages/prod/attr'))
 const Sku = lazy(() => import('@/pages/prod/sku'))
 const Spu = lazy(() => import('@/pages/prod/spu'))
+const Category = lazy(() => import('@/pages/prod/category'))
 const Screen = lazy(() => import('@/pages/screen'))
 
 // 二级路由
@@ -38,7 +41,7 @@ const constantRoutes: RouteType[] = [
   {
     path: '/login',
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Spin />}>
         <Login />
       </Suspense>
     ),
@@ -52,7 +55,7 @@ const constantRoutes: RouteType[] = [
   {
     path: '/',
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Spin />}>
         <Layout />
       </Suspense>
     ),
@@ -77,7 +80,7 @@ const constantRoutes: RouteType[] = [
   {
     path: '/screen',
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Spin />}>
         <AuthRoute component={Screen} />
       </Suspense>
     ),
@@ -91,7 +94,7 @@ const constantRoutes: RouteType[] = [
   {
     path: '/acl',
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Spin />}>
         <Layout />
       </Suspense>
     ),
@@ -137,7 +140,7 @@ const constantRoutes: RouteType[] = [
   {
     path: '/prod',
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Spin />}>
         <Layout />
       </Suspense>
     ),
@@ -183,6 +186,16 @@ const constantRoutes: RouteType[] = [
           icon: <DeploymentUnitOutlined />,
         },
       },
+      {
+        path: '/prod/category',
+        element: <AuthRoute component={Category} />,
+        name: 'category',
+        meta: {
+          title: '分类管理',
+          isShow: true,
+          icon: <AppstoreOutlined />,
+        },
+      },
     ],
     meta: {
       title: '商品管理',
@@ -193,7 +206,7 @@ const constantRoutes: RouteType[] = [
   {
     path: '/404',
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Spin />}>
         <NotFound />
       </Suspense>
     ),
@@ -207,7 +220,7 @@ const constantRoutes: RouteType[] = [
     // 匹配任意路径, 重定向到 404 页面
     path: '/:pathMatch/*',
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Spin />}>
         <Navigate to="/404" replace />
       </Suspense>
     ),
