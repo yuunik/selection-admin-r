@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import { Avatar, Select, Table, TableProps } from 'antd'
+import { MenuUnfoldOutlined } from '@ant-design/icons'
 
 import { getCategoryListApi } from '@/apis/category.tsx'
 import { CategoryType } from '@/types/prod'
-import { Select, Table, TableProps } from 'antd'
-import { TableRowSelection } from 'antd/es/table/interface'
 
 const columns: TableProps<CategoryType>['columns'] = [
   {
@@ -13,8 +13,13 @@ const columns: TableProps<CategoryType>['columns'] = [
   },
   {
     title: '图标',
-    dataIndex: 'orderNum',
-    key: 'orderNum',
+    dataIndex: 'imageUrl',
+    key: 'imageUrl',
+    render: (value) => (
+      <Avatar size={20} src={value} onError={() => true}>
+        <MenuUnfoldOutlined />
+      </Avatar>
+    ),
   },
   {
     title: '排序',
@@ -32,23 +37,6 @@ const columns: TableProps<CategoryType>['columns'] = [
     dataIndex: 'createTime',
   },
 ]
-
-// rowSelection objects indicates the need for row selection
-const rowSelection: TableRowSelection<CategoryType> = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(
-      `selectedRowKeys: ${selectedRowKeys}`,
-      'selectedRows: ',
-      selectedRows,
-    )
-  },
-  onSelect: (record, selected, selectedRows) => {
-    console.log(record, selected, selectedRows)
-  },
-  onSelectAll: (selected, selectedRows, changeRows) => {
-    console.log(selected, selectedRows, changeRows)
-  },
-}
 
 const Category: React.FC = () => {
   const [categoryList, setCategoryList] = useState<CategoryType[]>([])
@@ -73,17 +61,37 @@ const Category: React.FC = () => {
 
   const onSelectSearch = () => {}
 
-  const [checkStrictly] = useState(false)
-
   useEffect(() => {
-    getCategoryList()
+    getCategoryList().then()
   }, [])
 
   return (
     <section>
-      <div className="shadow-default rounded-[8px] bg-white p-[20px]">
+      <div className="shadow-default flex items-center justify-between rounded-[8px] bg-white p-[20px]">
         <div className="flex items-center gap-[8px]">
           <label>一级分类:</label>
+          <Select
+            showSearch
+            placeholder="-- Select --"
+            optionFilterProp="label"
+            onChange={onSelectChange}
+            onSearch={onSelectSearch}
+            options={level1CategoryList}
+          />
+        </div>
+        <div className="flex items-center gap-[8px]">
+          <label>二级分类:</label>
+          <Select
+            showSearch
+            placeholder="-- Select --"
+            optionFilterProp="label"
+            onChange={onSelectChange}
+            onSearch={onSelectSearch}
+            options={level1CategoryList}
+          />
+        </div>
+        <div className="flex items-center gap-[8px]">
+          <label>三级分类:</label>
           <Select
             showSearch
             placeholder="-- Select --"
@@ -99,7 +107,7 @@ const Category: React.FC = () => {
         <Table<CategoryType>
           columns={columns}
           dataSource={categoryList}
-          rowSelection={{ ...rowSelection, checkStrictly }}
+          rowKey="id"
         />
       </div>
     </section>
